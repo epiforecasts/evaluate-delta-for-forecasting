@@ -25,6 +25,12 @@ Optionally a list of dependencies may be generated using the following:
 renv::dependencies() 
 ```
 
+If `cmdstanr` has not been installed previously then stan may need to be installed. This can be done using the following,
+
+```r
+cmdstanr::install_cmdstan()
+```
+
 ### Analyses
 
 All analyses have been implemented using a `targets` workflow in `_targets.R` with modules stored in `targets`. The full analysis can be recreated using the following,

@@ -48,8 +48,8 @@ RUN Rscript -e 'devtools::install_github("mdlincoln/docthis")'
 RUN Rscript -e 'devtools::install_github("lorenzwalthert/precommit")'
 
 # install dependencies
-COPY DESCRIPTION /tmp/package/DESCRIPTION
-RUN Rscript -e "devtools::install_dev_deps('/tmp/package')"
+COPY renv.lock renv.lock
+RUN R -e 'renv::restore()'
 
 # install cmdstan
 RUN Rscript -e "cmdstanr::install_cmdstan()"
