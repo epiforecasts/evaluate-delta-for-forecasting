@@ -1,4 +1,4 @@
-library(bp.delta)
+library(forecast.vocs)
 options(mc.cores = 4)
 
 strains <- 2

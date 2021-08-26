@@ -5,9 +5,9 @@ library(future)
 library(future.callr)
 plan(callr)
 
-# load required packages and watch bp.delta for changes
+# load required packages and watch forecast.vocs for changes
 tar_option_set(
-  packages = c("bp.delta", "purrr", "data.table", "scoringutils"),
+  packages = c("forecast.vocs", "purrr", "data.table", "scoringutils"),
   deployment = "worker",
   workspace_on_error = TRUE,
   error = "continue"
@@ -25,12 +25,12 @@ meta_targets <- list(
   # Compile models
   tar_target(
     single_model,
-    bp.delta::load_model(strains = 1),
+    forecast.vocs::load_model(strains = 1),
     format = "file", deployment = "main",
   ),
   tar_target(
     two_model,
-    bp.delta::load_model(strains = 2),
+    forecast.vocs::load_model(strains = 2),
     format = "file", deployment = "main",
   ),
   # Arguments passed to `forecast()` to control forecasting

@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 
 
 ```{r, message = FALSE}
-library(bp.delta)
+library(forecast.vocs)
 ```
 
 *Note: Sub-headings where non-standard are there to guide the writing process and will be removed in the final draft.*

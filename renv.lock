@@ -205,12 +205,6 @@
       "Repository": "CRAN",
       "Hash": "d9778c960792721e8433daaf3db8f16a"
     },
-    "bp.delta": {
-      "Package": "bp.delta",
-      "Version": "0.0.0.9000",
-      "Source": "unknown",
-      "Hash": "ec7014442f44dbb0fa6d0224209f5766"
-    },
     "bridgesampling": {
       "Package": "bridgesampling",
       "Version": "1.1-2",
@@ -488,6 +482,18 @@
       "Source": "Repository",
       "Repository": "RSPM",
       "Hash": "81c3244cab67468aac4c60550832655d"
+    },
+    "forecast.vocs": {
+      "Package": "forecast.vocs",
+      "Version": "0.0.0.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "epiforecasts",
+      "RemoteRepo": "forecast.vocs",
+      "RemoteRef": "main",
+      "RemoteSha": "1c5f26dcf8423984336a53535ea2b951ecd496fb",
+      "Hash": "4cdf52235b55a1cd64a507dbfe5f530b"
     },
     "fs": {
       "Package": "fs",
@@ -995,10 +1001,15 @@
     },
     "precommit": {
       "Package": "precommit",
-      "Version": "0.1.3",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "e41ce3e67e53187c10cd856744786ed2"
+      "Version": "0.1.3.9015",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "lorenzwalthert",
+      "RemoteRepo": "precommit",
+      "RemoteRef": "master",
+      "RemoteSha": "783fd5c068dd527bb9f11c8725dab52ed4a0c0c2",
+      "Hash": "1f2781843d9aa8ce133fc2b7b73b4b76"
     },
     "prettyunits": {
       "Package": "prettyunits",
@@ -1301,10 +1312,10 @@
     },
     "targets": {
       "Package": "targets",
-      "Version": "0.6.0",
+      "Version": "0.7.0",
       "Source": "Repository",
       "Repository": "RSPM",
-      "Hash": "0249d89393821026c36e640b08c761ce"
+      "Hash": "f3bb17418c64dda3c4d4992f31e77afb"
     },
     "tensorA": {
       "Package": "tensorA",
