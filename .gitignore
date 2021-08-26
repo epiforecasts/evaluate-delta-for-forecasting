@@ -1,10 +1,5 @@
 *.xlsx
-inst/stan/bp
-inst/stan/twostrainbp
-results/stan-fit.rds
-output
 *.rds
-inst/doc
 *.tex
 *.log
 _targets

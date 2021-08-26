@@ -74,4 +74,4 @@ avail_lag <- nrow(germany_obs[is.na(seq_total) & !is.na(seq_available)])
 germany_obs[, seq_available := seq_available + 7 * avail_lag]
 
 # save all observations
-usethis::use_data(germany_obs, overwrite = TRUE)
+fwrite(germany_obs, overwrite = TRUE)

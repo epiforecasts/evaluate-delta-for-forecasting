@@ -5,15 +5,6 @@ library(future)
 library(future.callr)
 plan(callr)
 
-# run  this workflow:
-# tar_make_future(workers = future::availableCores()) # nolint
-
-# explore this workflow:
-# tar_visnetwork(targets_only = TRUE) # nolint
-
-# watch whilst running:
-# tar_watch(targets_only = TRUE) # nolint
-
 # load required packages and watch bp.delta for changes
 tar_option_set(
   packages = c("bp.delta", "purrr", "data.table", "scoringutils"),
@@ -28,14 +19,6 @@ purrr::walk(targets, source)
 
 # datasets of interest
 sources <- list(source = "germany")
-load_obs <- function(source) {
-  source <- match.arg(source,
-    choices = "germany"
-  )
-  if (source %in% "germany") {
-    bp.delta::germany_obs
-  }
-}
 
 # input and control targets
 meta_targets <- list(
