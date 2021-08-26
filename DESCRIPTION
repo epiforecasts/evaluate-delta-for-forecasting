@@ -23,6 +23,7 @@ Imports:
     tarchetypes,
     targets
 Suggests:
+    git2r,
     knitr,
     lintr,
     precommit,
