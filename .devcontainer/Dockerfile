@@ -50,6 +50,3 @@ RUN Rscript -e 'devtools::install_github("lorenzwalthert/precommit")'
 # install dependencies
 COPY renv.lock renv.lock
 RUN R -e 'renv::restore()'
-
-# install cmdstan
-RUN Rscript -e "cmdstanr::install_cmdstan()"
