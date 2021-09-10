@@ -13,7 +13,7 @@ scenario_forecast_targets <- list(
           variant_relationship = variant_relationship_scenarios,
           model = two_model,
           id = avail_scenario_obs$id[[1]],
-          delta = avail_scenario_obs$delta[[1]]
+          voc_scale = avail_scenario_obs$voc_scale[[1]]
         )
       )
     ),

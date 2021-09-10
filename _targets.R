@@ -13,8 +13,13 @@ tar_option_set(
   error = "continue"
 )
 
+# load functions
+functions <- list.files("R", full.names = TRUE)
+purrr::walk(functions, source)
+
 # load target modules
 targets <- list.files("targets", full.names = TRUE)
+targets <- grep("*\\.R", targets, value = TRUE)
 purrr::walk(targets, source)
 
 # datasets of interest
@@ -41,6 +46,13 @@ meta_targets <- list(
       parallel_chains = 1, plot = FALSE, chains = 2, keep_fit = FALSE
     ),
     deployment = "main"
+  ),
+  # Arguments passed to `forecast()` to control retrospecive forecasting
+  tar_target(
+    retro_args,
+    list(
+      voc_scale = c(0.5, 0.25)
+    )
   )
 )
 # branch targets across data sources (see individual targets scripts in
