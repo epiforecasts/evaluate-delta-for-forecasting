@@ -11,7 +11,8 @@ summarise_forecast_targets <- list(
       ), ~ .[, .(
         id, forecast_date, strains, overdispersion, variant_relationship,
         samples, max_rhat, divergent_transitions,
-        per_divergent_transitons, max_treedepth
+        per_divergent_transitons, max_treedepth, no_at_max_treedepth,
+        per_at_max_treedepth
       )])
     ),
     deployment = "worker", memory = "transient", garbage_collection = TRUE,
@@ -45,7 +46,7 @@ summarise_forecast_targets <- list(
       )[, location := source],
       data_availability_scenarios[
         ,
-        delta := map_chr(delta, paste, collapse = ", ")
+        voc_scale := map_chr(voc_scale, paste, collapse = ", ")
       ],
       by = "id", all.x = TRUE
     ),
@@ -62,7 +63,7 @@ summarise_forecast_targets <- list(
       ],
       current_obs[, .(date,
         true_value = cases,
-        share_delta, seq_delta, seq_total
+        share_voc, seq_voc, seq_total
       )],
       all.x = TRUE, by = "date"
     ),

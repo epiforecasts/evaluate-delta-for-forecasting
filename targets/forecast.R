@@ -6,6 +6,7 @@ forecast_targets <- list(
       forecast_dt,
       c(
         forecast_args,
+        retro_args,
         list(
           obs = retro_obs,
           strains = 1,
@@ -23,6 +24,7 @@ forecast_targets <- list(
       forecast_dt,
       c(
         forecast_args,
+        retro_args,
         list(
           obs = retro_obs,
           strains = 2,

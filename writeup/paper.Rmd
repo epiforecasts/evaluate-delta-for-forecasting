@@ -8,10 +8,6 @@ output:
     toc: true
     theme: united
   word_document: default
-vignette: >
-  %\VignetteIndexEntry{Evaluating the impact of modelling strain dynamics on short-term COVID-19 forecast performance}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 bibliography: library.bib
 csl: https://raw.githubusercontent.com/citation-style-language/styles/master/apa-numeric-superscript-brackets.csl
 header-includes:
@@ -27,12 +23,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-
 ```{r, message = FALSE}
 library(forecast.vocs)
 ```
-
-*Note: Sub-headings where non-standard are there to guide the writing process and will be removed in the final draft.*
 
 ## Authors
 
@@ -53,7 +46,7 @@ Changes in the dynamics of reported cases of COVID-19 have been difficult to pre
 
 **Methods:** 
 
-We retrospectively evalute the short-term forecasting performance of a two strain autoregressive branching process model in comparison to the same model without strain dynamics and to the ECDC forecasting hub ensemble in Germany and the United Kingdom from the first detection of the DELTA variant until it made up >98% of cases. We also explore the impact of noisy and lagged sequencing data and the presence of prior evidence for increased transmissibility on performance. 
+We retrospectively evalute the short-term forecasting performance of a two strain autoregressive branching process model in comparison to the same model without strain dynamics and to the ECDC forecasting hub ensemble in Germany and the United Kingdom from the first detection of the Delta variant until it made up >98% of cases. We also explore the impact of noisy and lagged sequencing data and the presence of prior evidence for increased transmissibility on performance using simulated scenarios.
 
 **Results:** 
 
@@ -75,7 +68,7 @@ Changes in the dynamics of reported cases of COVID-19 have been difficult to pre
 
 ### What did we do
 
-In this study, we aim to retrospectively evalute the short-term forecasting performance of explicitly modelling COVID-19 strain dynamics during a transition from one dominant strain to another across two geographies and a range of simulated data availability scenarios. We use a relatively simplistic modelling approach in order to quantify the impact of modelling strain dynamics only versus other factors. We compare our retrospective forecasts to a multi-model ensemble of forecasts produced in real time for the same locations and discuss differences in performance. 
+In this study, we aim to retrospectively evalute the short-term forecasting performance of explicitly modelling COVID-19 strain dynamics during a transition from one dominant strain to another across several geographies and a range of simulated data availability scenarios. We use a range of simplistic modelling approaches in order to quantify the impact of modelling strain dynamics only versus other factors. Finally, we compare our retrospective forecasts to a multi-model ensemble of forecasts produced in real time for the same locations and discuss differences in performance. 
 
 
 ## Methods
@@ -92,89 +85,15 @@ Sequence data for the United Kingdom was sourced from ...
 
 #### Single strain
 
-We model the mean ($\lambda_t$) of reported COVID-19 cases ($C_t$) as an order 1 autoregressive (AR(1)) process on the log scale by week ($t$). The model is initialised by assuming that the initial reported cases are representative with a small amount of error (2.5%).
-
-\begin{align}
-  \log \lambda_0 &\sim \text{LogNormal}\left(\log C_0 , 0.025 \times \log C_0 \right) \\
-  \log \lambda_t &= \log \lambda_{t-1} + r_t
-\end{align}
-
-Where $r_t$ can be interpreted as the weekly growth rate and the exponential of $r_t$ as the effective reproduction number ($R_t$) assuming a generation time of 7 days. $r_t$ is then itself modelled as a differenced AR(1) process, 
-
-\begin{align}
-  r_0 &\sim \text{Normal}\left(0, 0.25 \right) \\
-  r_t &= r_{t-1} + \epsilon_t  \\
-  \epsilon_0 &= \eta_0 \\
-  \epsilon_t &= \beta \epsilon_{t-1} + \eta_t
-\end{align}
-
-Where, 
-
-\begin{align}
-  \eta_t &\sim \text{Normal}\left(0, \sigma \right) \\
-  \sigma &\sim \text{Normal}\left(0, 0.1 \right) \\
-  \beta &\sim \text{Normal}\left(0, 1 \right)
-\end{align}
-
-We then assume a negative binomial observation model with overdispersion $\phi_c$ for reported cases ($C_t$),
-
-\begin{align}
-  C_{t} &\sim \text{NegBinomial}\left(\lambda_t, \phi_c\right) \\
-  \frac{1}{\sqrt{\phi_c}} &\sim \text{Normal}(0, 1) 
-\end{align}
-
-Where $\sigma$, and $\frac{1}{\sqrt{phi_c}}$ are truncated to be greater than 0 and $\beta$ is truncated to be between -1 and 1.
+We model the mean ($\lambda_t$) of reported COVID-19 cases ($C_t$) as an order 1 autoregressive (AR(1)) process on the log scale by week ($t$). We then assume a negative binomial observation model with overdispersion $\phi_c$ for reported cases ($C_t$). See the Supplementary Information for futher details.
 
 #### Two strain
 
-We model strain dynamics using the single strain model as a starting point but with the addition of strain specific AR(1) variation and a beta binomial observation process for sequence data. The full two strain model is described below. Parameters related to the delta variant are given the $\delta$ superscript and parameters related to non-delta cases are given the $o$ superscript.
-
-Mean reported cases are again defined using a AR(1) process on the log scale for each strain and the combined for overall mean reported cases. 
-
-\begin{align}
-  \log \lambda_0 &\sim \text{LogNormal}\left(\log C_0 , 0.025 \times \log C_0 \right) \\
-  \log \lambda^{\delta}_0 &\sim \text{LogNormal}\left(\log C^{\delta}_0 , 0.025 \times \log C^{\delta}_0 \right) \\
-  \log \lambda^{o}_0 &= \log \left(\lambda_0 - \lambda^{\delta}_0 \right) \\
-  \log \lambda^{\delta}_t &= \log \lambda^{\delta}_{t-1} + r^{\delta}_t \\
-  \log \lambda^{o}_t &= \log \lambda^{o}_{t-1} + r^{o}_t \\
-  \lambda_t &= \lambda^{\delta}_t + \lambda^{o}_t
-\end{align}
-
-Where $C^{\delta}_0$ is derived by calculating the mean proportion of cases that were delta for the first time point using the overall number of reported cases, the number of sequenced cases, and the number of sequences that were positive for the delta variant. The growth rate for delta and non-delta cases ($r^{o, \delta}_t$) is then modelled as a combination of an overall growth rate ($r_t$ as defined for the single strain model), a strain specific modifer ($s^{o, \delta}_0$), and an AR(1) error term post introduction ($\epsilon^{o, \delta}_t$).
-
-\begin{align}
-  r^{o, \delta}_t &= r_t + s^{o, \delta} + \epsilon^{o, \delta}_t \\
-  \epsilon^{o, \delta}_0 &= 0 \\
-  \epsilon^{o, \delta}_t &= \epsilon^{o, \delta}_{t-1} + \eta^{o, \delta}
-\end{align}
-
-Where, 
-
-\begin{align}
-  \eta^{o, \delta}_t &\sim \text{Normal}\left(0, \sigma^{o, \delta} \right) \\
-  \sigma^{o, \delta} &\sim \text{Normal}\left(0, 0.1 \right) \\
-  s^o &= 0 \\
-  s^{\beta} &\sim \text{Normal}(0.2, 0.2)
-\end{align}
-
-Which assumes a relatively uninformed transmissibility advantage for the delta variant vs non-delta variant cases. The mean proportion of samples that have the delta variant ($p_t$) is then estimated using the mean reported cases with the delta variant and the overall mean reported cases.
-
-\begin{equation} 
-  p_t = \frac{\lambda^{\delta}_t}{\lambda_t}
-\end{equation}
-
-In addition to the negative binomial observation model for cases we assume a beta binomial observation model for the number of sequences ($N_t$) that are postive ($P_t$) for the delta variant each week with overdispersion $\phi_s$.
-
-\begin{align}
-  P_{t} &\sim \mathrm{BetaBinomial}\left(N_t, p_t \phi_s, (1 - p_t) \phi_s\right) \\
-  \frac{1}{\sqrt{\phi_s}} &\sim \mathcal{N}(0, 1) 
-\end{align}
-
-Where $\sigma^{o, \delta}$, and $\frac{1}{\sqrt{\phi_s}}$ are truncated to be greater than 0.
+We model strain dynamics using the single strain model as a starting point but with the addition of strain specific AR(1) variation and a beta binomial observation process for sequence data. Strain dynamics are modelled to be either fully independent from each other, pooled via nested random walks, or fully dependent excluding a single transmissibility scaling factor. The full two strain model is described in the Supplementary Information. 
 
 #### Fitting
 
-Each forecast target was fit independently for each model using Markov-chain Monte Carlo (MCMC) in stan [@rstan]. A minimum of 4 chains were used with a warmup of 1000 samples and a total of 4000 samples post warmup. Convergence was assessed using the R hat diagnostic [@rstan]. All forecasts used an adapt delta of 0.99 and a max treedepth of 15. A small percentage of divergent transitions were observed for all forecasts (<0.5%).
+Each forecast target was fit independently for each model using Markov-chain Monte Carlo (MCMC) in stan [@rstan]. A minimum of 4 chains were used with a warmup of 1000 samples and a total of 4000 samples post warmup. Convergence was assessed using the R hat diagnostic [@rstan]. All forecasts used an adapt delta of 0.99 and a max treedepth of 15. A small percentage of divergent transitions were observed for all forecasts (<0.5%). Models were evaulated using prior and posterior checks as well as simulation-based calibration. See the Supplementary Information for further details.
 
 ### Real-world evaluation
 
@@ -192,9 +111,15 @@ In order to simulate unobserved scenarios and explore the impact of data availab
 
 Model forecast performance in these scenarios was assessed using the same approach as outlined above for the real-world performance evaluation using the single strain model as a baseline.
 
+### Comparison to prospective ensemble forecasts
+
+- Summarise Germany/Poland Hub ensemble and submission process etc.
+- Score one and two strain models along with the ensemble
+- Present summarised results and disucss differences and implications.
+
 ### Reproducibility
 
-All analysis was carried out using R version 4.0.5 [@R]. The analysis is available as an R package. A dockerfile has been made available with the code to enhance reproducibility [@Boettiger:2015dw].
+All analysis was carried out using R version 4.0.5 [@R]. The models and the tools to use them are available as an R package. The analysis pipeline described here is available as a `targets` workflow [@targets] along with an archive of all interim results. A dockerfile has been made available with the code to enhance reproducibility [@Boettiger:2015dw].
 
 ## Results
 
@@ -202,23 +127,15 @@ All analysis was carried out using R version 4.0.5 [@R]. The analysis is availab
 
 #### Overview
 
-#### Germany
-
  - Plot of performance over time + forecasts over time.
  - Table of performance across all models at two week horizon.
- - Plot of performance by horizon.
+ - Plot of relative performance by horizon and location.
+ - Plot of relative performance by percentage of cases that are Delta by horizon and location
  - SI table of performance for other time horizons.
- - Same as above replicated for percentage delta in the two strain model.
-
-#### United Kingdom
 
 ### Data availability scenarios
 
 #### Overview
-
-#### Germany
-
-#### United Kingdom
 
 ## Discussion
 
@@ -262,10 +179,6 @@ Archived source code at time of publication:
 
 License: MIT
 
-**Contributors**
-
-SA, JB, and SF conceived and designed the work. SA undertook the analysis with advice from all other authors. All authors wrote the first draft of the paper and all authors contributed to subsequent drafts. All authors approve the work for publication and agree to be accountable for the work.
-
 **Grant information**
 
 This work was supported by the Wellcome Trust through a Wellcome Senior Research Fellowship to SF [210758].
@@ -273,7 +186,6 @@ This work was supported by the Wellcome Trust through a Wellcome Senior Research
 **Competing interests**
 
 There are no competing interests. 
-
 
 ## References
 
