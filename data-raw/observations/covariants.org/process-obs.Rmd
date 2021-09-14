@@ -1,0 +1,116 @@
+---
+title: "Aggregate case notification and sequence data for ECDC case studies"
+output: github_document
+---
+```{r packages}
+library(data.table)
+library(jsonlite)
+library(gh)
+library(purrr)
+library(ggplot2)
+library(here)
+```
+
+## Case notification data
+
+- Load truth data from the ECDC via the ECDC forecasting hub and process.
+
+```{r}
+cases <- fread("https://raw.githubusercontent.com/epiforecasts/covid19-forecast-hub-europe/main/data-truth/JHU/truth_JHU-Incident%20Cases.csv") # nolint
+
+# Format date
+cases[, date := as.Date(date)]
+
+# Summarise to weekly cases starting on Saturday to Sync with the forecast hubs
+cases[, cases := frollsum(value, n = 7)]
+
+# Filter from the 1st of January and keep only Saturdays
+cases <- cases[date >= as.Date("2021-01-01")]
+cases <- cases[weekdays(date) %in% "Saturday"]
+
+# Only most recent case data is available
+cases[, cases_available := date]
+
+# Drop unnecessary columns
+set(cases, j = c("value"), value = NULL)
+
+# Summary
+summary(cases)
+```
+
+# Sequence notification data
+
+- Define a function to download, load, and process sequence data from [covariants.org](https://covariants.org) (which itself process sequence data from [GISAID](https://www.gisaid.org)).
+
+```{r}
+download_covariants_sequences <- function(sha, path = "cluster_tables/21A.Delta_data.json") { # nolint
+  if (missing(sha)) {
+    url <- paste0(
+      "https://raw.githubusercontent.com/hodcroftlab/covariants/master/", path
+    )
+  } else {
+    url <- paste(
+      "https://raw.githubusercontent.com/hodcroftlab/covariants",
+      sha, path,
+      sep = "/"
+    )
+  }
+  sequences <- jsonlite::fromJSON(url)
+  sequences <- purrr::map(sequences, as.data.table)
+  sequences <- data.table::rbindlist(sequences, idcol = "location_name")
+  return(sequences[])
+}
+```
+
+- Test by downloading the latest available data
+
+```{r}
+latest_sequences <- download_covariants_sequences()
+latest_sequences
+```
+
+- Get the commits to the target file in order to construct retrospective data
+
+```{r}
+covariants_file_commits <- function(path = "cluster_tables/21A.Delta_data.json") { # nolint
+  commits <- gh::gh(
+    "/repos/hodcroftlab/covariants/commits?path={path}",
+    owner = "hodcroftlab",
+    repo = "covariants",
+    path = path
+  )
+
+  commits <- purrr::map(
+    commits,
+    ~ data.table(
+      date = as.Date(as.character(.$commit$committer$date)),
+      datetime = lubridate::as_datetime(
+        as.character(.$commit$committer$date)
+      ),
+      author = .$commit$committer$name,
+      message = .$commit$message,
+      sha = .$sha
+    )
+  )
+  commits <- data.table::rbindlist(commits)
+  return(commits[])
+}
+
+delta_sequence_commits <- covariants_file_commits()
+delta_sequence_commits
+```
+
+- Keep only the last commits from any given day and download data from this commit.
+
+```{r}
+delta_sequences <- delta_sequence_commits[order(date)][,
+  .SD[datetime == max(datetime)],
+  by = date
+]
+setnames(delta_sequences, "date", "seq_available")
+delta_sequences[, data := purrr::map(sha, download_covariants_sequences)]
+delta_sequences <- delta_sequences[, rbindlist(data), by = seq_available]
+delta_sequences
+```
+
+# Merge, explore, and save data
