@@ -140,7 +140,7 @@ ggplot(unique(notifications[, .(date, cases)])) +
   theme_bw()
 ```
 
-![](germany_files/figure-gfm/cases-germany-1.png)<!-- -->
+![](process-obs_files/figure-gfm/cases-germany-1.png)<!-- -->
 
 ``` r
 # plot sequences
@@ -152,7 +152,7 @@ ggplot(notifications[!is.na(share_voc)]) +
   theme(legend.position = "bottom")
 ```
 
-![](germany_files/figure-gfm/sequences-germany-1.png)<!-- -->
+![](process-obs_files/figure-gfm/sequences-germany-1.png)<!-- -->
 
 ``` r
 # plot sequence % change based on latest available
@@ -176,4 +176,4 @@ ggplot(seq_change) +
   theme(legend.position = "bottom")
 ```
 
-![](germany_files/figure-gfm/sequences-change-germany-1.png)<!-- -->
+![](process-obs_files/figure-gfm/sequences-change-germany-1.png)<!-- -->
