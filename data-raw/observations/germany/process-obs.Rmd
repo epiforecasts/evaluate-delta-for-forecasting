@@ -36,7 +36,7 @@ set(cases, j = c("value", "location", "location_name"), value = NULL)
 summary(cases)
 ```
 
-# Sequence notification data
+## Sequence notification data
 
 - Sequence data sourced from RKI reports see the SI for more details.
 ```{r}
@@ -69,11 +69,10 @@ sequences <- sequences[date >= as.Date("2021-04-18")]
 summary(sequences)
 ```
 
-# Merge, explore, and save data
+## Merge, explore, and save data
 
 - Merge duplicating case data for all sequence versions. Sequences are only available aggregated by week from Sunday. Approximate the same timespan as the case data by changing the weekly reference date
 ```{r}
-
 notifications <- merge(cases, copy(sequences)[, date := date - 1],
   by = "date", all.x = TRUE
 )
@@ -87,7 +86,7 @@ summary(notifications)
 
 - Plot cases in Germany
 
-```{r cases-germany}
+```{r cases}
 # plot cases
 ggplot(unique(notifications[, .(date, cases)])) +
   aes(x = date, y = cases) +
@@ -97,7 +96,7 @@ ggplot(unique(notifications[, .(date, cases)])) +
 
 - Plot proportion of sequences that were Delta by sequence availability date.
 
-```{r sequences-germany}
+```{r sequences}
 # plot sequences
 ggplot(notifications[!is.na(share_voc)]) +
   aes(x = date, y = share_voc, col = seq_available, group = seq_available) +
@@ -109,7 +108,7 @@ ggplot(notifications[!is.na(share_voc)]) +
 
 - Plot relative change in the proportion of sequences that were Delta between each release of sequence data and the latest available release.
 
-```{r sequences-change-germany} 
+```{r sequences-change} 
 # plot sequence % change based on latest available
 latest_seq <- notifications[, .SD[seq_available == max(seq_available)],
   by = date

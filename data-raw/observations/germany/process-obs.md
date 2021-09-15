@@ -46,7 +46,7 @@ summary(cases)
     ##  3rd Qu.:2021-07-29   3rd Qu.:102188   3rd Qu.:2021-07-29  
     ##  Max.   :2021-09-11   Max.   :145568   Max.   :2021-09-11
 
-# Sequence notification data
+## Sequence notification data
 
   - Sequence data sourced from RKI reports see the SI for more details.
 
@@ -82,30 +82,26 @@ sequences <- sequences[date >= as.Date("2021-04-18")]
 summary(sequences)
 ```
 
-    ##       date              seq_total       seq_voc        share_voc        
-    ##  Min.   :2021-04-18   Min.   : 452   Min.   :  3.0   Min.   :0.0007985  
-    ##  1st Qu.:2021-05-02   1st Qu.:1801   1st Qu.: 34.0   1st Qu.:0.0119119  
-    ##  Median :2021-05-16   Median :3616   Median : 89.0   Median :0.0264457  
-    ##  Mean   :2021-05-19   Mean   :2992   Mean   :134.2   Mean   :0.1231187  
-    ##  3rd Qu.:2021-06-06   3rd Qu.:4088   3rd Qu.:143.0   3rd Qu.:0.0823743  
-    ##  Max.   :2021-07-18   Max.   :4547   Max.   :643.0   Max.   :0.9237589  
-    ##  seq_available       
-    ##  Min.   :2021-05-12  
-    ##  1st Qu.:2021-06-16  
-    ##  Median :2021-06-30  
-    ##  Mean   :2021-06-29  
-    ##  3rd Qu.:2021-07-22  
-    ##  Max.   :2021-07-29
+    ##       date              seq_total       seq_voc        share_voc         seq_available       
+    ##  Min.   :2021-04-18   Min.   : 452   Min.   :  3.0   Min.   :0.0007985   Min.   :2021-05-12  
+    ##  1st Qu.:2021-05-02   1st Qu.:1801   1st Qu.: 34.0   1st Qu.:0.0119119   1st Qu.:2021-06-16  
+    ##  Median :2021-05-16   Median :3616   Median : 89.0   Median :0.0264457   Median :2021-06-30  
+    ##  Mean   :2021-05-19   Mean   :2992   Mean   :134.2   Mean   :0.1231187   Mean   :2021-06-29  
+    ##  3rd Qu.:2021-06-06   3rd Qu.:4088   3rd Qu.:143.0   3rd Qu.:0.0823743   3rd Qu.:2021-07-22  
+    ##  Max.   :2021-07-18   Max.   :4547   Max.   :643.0   Max.   :0.9237589   Max.   :2021-07-29
 
-# Merge, explore, and save data
+## Merge, explore, and save data
+
+  - Merge duplicating case data for all sequence versions. Sequences are
+    only available aggregated by week from Sunday. Approximate the same
+    timespan as the case data by changing the weekly reference date
+
+<!-- end list -->
 
 ``` r
-# merge duplicating case data for all sequence versions
-# Sequences are only available aggregated by week from Sunday
-# Approximate the same timespan as the case data by changing the
-# weekly reference date
 notifications <- merge(cases, copy(sequences)[, date := date - 1],
-                       by = "date", all.x = TRUE)
+  by = "date", all.x = TRUE
+)
 
 # save to observations folder
 fwrite(notifications, file = here("data/observations/germany.csv"))
@@ -131,6 +127,10 @@ summary(notifications)
     ##  Max.   :0.923759   Max.   :2021-07-29  
     ##  NA's   :12         NA's   :12
 
+  - Plot cases in Germany
+
+<!-- end list -->
+
 ``` r
 # plot cases
 ggplot(unique(notifications[, .(date, cases)])) +
@@ -139,7 +139,12 @@ ggplot(unique(notifications[, .(date, cases)])) +
   theme_bw()
 ```
 
-![](process-obs_files/figure-gfm/cases-germany-1.png)<!-- -->
+![](process-obs_files/figure-gfm/cases-1.png)<!-- -->
+
+  - Plot proportion of sequences that were Delta by sequence
+    availability date.
+
+<!-- end list -->
 
 ``` r
 # plot sequences
@@ -151,7 +156,13 @@ ggplot(notifications[!is.na(share_voc)]) +
   theme(legend.position = "bottom")
 ```
 
-![](process-obs_files/figure-gfm/sequences-germany-1.png)<!-- -->
+![](process-obs_files/figure-gfm/sequences-1.png)<!-- -->
+
+  - Plot relative change in the proportion of sequences that were Delta
+    between each release of sequence data and the latest available
+    release.
+
+<!-- end list -->
 
 ``` r
 # plot sequence % change based on latest available
@@ -175,4 +186,4 @@ ggplot(seq_change) +
   theme(legend.position = "bottom")
 ```
 
-![](process-obs_files/figure-gfm/sequences-change-germany-1.png)<!-- -->
+![](process-obs_files/figure-gfm/sequences-change-1.png)<!-- -->
