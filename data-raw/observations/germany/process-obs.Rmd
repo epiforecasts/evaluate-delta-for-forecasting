@@ -65,20 +65,18 @@ sequences[, share_voc := seq_voc / seq_total][, est_seq_total := NULL]
 # Include sequences from 18th of April
 sequences <- sequences[date >= as.Date("2021-04-18")]
 
-# Sequences are only available aggregated by week from Sunday
-# Approximate the same timespan as the case data by changing the
-# weekly reference date
-sequences[, date := date - 1]
-
 # Summary
 summary(sequences)
 ```
 
 # Merge, explore, and save data
 
+- Merge duplicating case data for all sequence versions. Sequences are only available aggregated by week from Sunday. Approximate the same timespan as the case data by changing the weekly reference date
 ```{r}
-# merge duplicating case data for all sequence versions
-notifications <- merge(cases, sequences, by = "date", all.x = TRUE)
+
+notifications <- merge(cases, copy(sequences)[, date := date - 1],
+  by = "date", all.x = TRUE
+)
 
 # save to observations folder
 fwrite(notifications, file = here("data/observations/germany.csv"))
@@ -87,6 +85,8 @@ fwrite(notifications, file = here("data/observations/germany.csv"))
 summary(notifications)
 ```
 
+- Plot cases in Germany
+
 ```{r cases-germany}
 # plot cases
 ggplot(unique(notifications[, .(date, cases)])) +
@@ -94,6 +94,8 @@ ggplot(unique(notifications[, .(date, cases)])) +
   geom_col(alpha = 0.8) +
   theme_bw()
 ```
+
+- Plot proportion of sequences that were Delta by sequence availability date.
 
 ```{r sequences-germany}
 # plot sequences
@@ -104,6 +106,8 @@ ggplot(notifications[!is.na(share_voc)]) +
   theme_bw() +
   theme(legend.position = "bottom")
 ```
+
+- Plot relative change in the proportion of sequences that were Delta between each release of sequence data and the latest available release.
 
 ```{r sequences-change-germany} 
 # plot sequence % change based on latest available

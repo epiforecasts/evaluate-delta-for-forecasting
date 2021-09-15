@@ -103,14 +103,48 @@ delta_sequence_commits
 - Keep only the last commits from any given day and download data from this commit.
 
 ```{r}
-delta_sequences <- delta_sequence_commits[order(date)][,
+sequences <- delta_sequence_commits[order(date)][,
   .SD[datetime == max(datetime)],
   by = date
 ]
-setnames(delta_sequences, "date", "seq_available")
-delta_sequences[, data := purrr::map(sha, download_covariants_sequences)]
-delta_sequences <- delta_sequences[, rbindlist(data), by = seq_available]
-delta_sequences
+setnames(sequences, "date", "seq_available")
+sequences[, data := purrr::map(sha, download_covariants_sequences)]
+sequences <- sequences[, rbindlist(data), by = seq_available]
+sequences
+```
+
+- Select and rename variables of interest.
+
+```{r}
+sequences <- sequences[
+  ,
+  .(
+    seq_available = seq_available,
+    location_name,
+    week_starting = as.Date(week),
+    week_ending = as.Date(week) + 6,
+    seq_voc = unsmoothed_cluster_sequences,
+    seq_total = unsmoothed_total_sequences
+  )
+][, share_voc := seq_voc / seq_total][]
+sequences
 ```
 
 # Merge, explore, and save data
+
+- Merge duplicating case data for all sequence versions. Sequences are only available aggregated by week from Sunday. Approximate the same timespan as the case data by changing the weekly reference date
+```{r}
+adjusted_seq <- copy(sequences)[
+  ,
+  date := week_ending - 1
+][, c("week_starting", "week_ending") := NULL]
+notifications <- merge(cases, adjusted_seq,
+  by = c("date", "location_name"), all.x = TRUE
+)
+
+# save to observations folder
+fwrite(notifications, file = here("data/observations/covariants.csv"))
+
+# Summary
+summary(notifications)
+```

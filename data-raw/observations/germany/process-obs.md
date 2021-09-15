@@ -78,22 +78,17 @@ sequences[, share_voc := seq_voc / seq_total][, est_seq_total := NULL]
 # Include sequences from 18th of April
 sequences <- sequences[date >= as.Date("2021-04-18")]
 
-# Sequences are only available aggregated by week from Sunday
-# Approximate the same timespan as the case data by changing the
-# weekly reference date
-sequences[, date := date - 1]
-
 # Summary
 summary(sequences)
 ```
 
     ##       date              seq_total       seq_voc        share_voc        
-    ##  Min.   :2021-04-17   Min.   : 452   Min.   :  3.0   Min.   :0.0007985  
-    ##  1st Qu.:2021-05-01   1st Qu.:1801   1st Qu.: 34.0   1st Qu.:0.0119119  
-    ##  Median :2021-05-15   Median :3616   Median : 89.0   Median :0.0264457  
-    ##  Mean   :2021-05-18   Mean   :2992   Mean   :134.2   Mean   :0.1231187  
-    ##  3rd Qu.:2021-06-05   3rd Qu.:4088   3rd Qu.:143.0   3rd Qu.:0.0823743  
-    ##  Max.   :2021-07-17   Max.   :4547   Max.   :643.0   Max.   :0.9237589  
+    ##  Min.   :2021-04-18   Min.   : 452   Min.   :  3.0   Min.   :0.0007985  
+    ##  1st Qu.:2021-05-02   1st Qu.:1801   1st Qu.: 34.0   1st Qu.:0.0119119  
+    ##  Median :2021-05-16   Median :3616   Median : 89.0   Median :0.0264457  
+    ##  Mean   :2021-05-19   Mean   :2992   Mean   :134.2   Mean   :0.1231187  
+    ##  3rd Qu.:2021-06-06   3rd Qu.:4088   3rd Qu.:143.0   3rd Qu.:0.0823743  
+    ##  Max.   :2021-07-18   Max.   :4547   Max.   :643.0   Max.   :0.9237589  
     ##  seq_available       
     ##  Min.   :2021-05-12  
     ##  1st Qu.:2021-06-16  
@@ -106,7 +101,11 @@ summary(sequences)
 
 ``` r
 # merge duplicating case data for all sequence versions
-notifications <- merge(cases, sequences, by = "date", all.x = TRUE)
+# Sequences are only available aggregated by week from Sunday
+# Approximate the same timespan as the case data by changing the
+# weekly reference date
+notifications <- merge(cases, copy(sequences)[, date := date - 1],
+                       by = "date", all.x = TRUE)
 
 # save to observations folder
 fwrite(notifications, file = here("data/observations/germany.csv"))
@@ -115,22 +114,22 @@ fwrite(notifications, file = here("data/observations/germany.csv"))
 summary(notifications)
 ```
 
-    ##       date                cases        cases_available        seq_total   
-    ##  Min.   :2021-03-20   Min.   :  4181   Min.   :2021-03-20   Min.   : 452  
-    ##  1st Qu.:2021-05-01   1st Qu.: 22631   1st Qu.:2021-05-01   1st Qu.:1801  
-    ##  Median :2021-05-15   Median : 77261   Median :2021-05-15   Median :3616  
-    ##  Mean   :2021-05-22   Mean   : 77741   Mean   :2021-05-22   Mean   :2992  
-    ##  3rd Qu.:2021-06-10   3rd Qu.:131887   3rd Qu.:2021-06-10   3rd Qu.:4088  
-    ##  Max.   :2021-09-11   Max.   :145568   Max.   :2021-09-11   Max.   :4547  
-    ##                                                             NA's   :12    
-    ##     seq_voc        share_voc        seq_available       
-    ##  Min.   :  3.0   Min.   :0.000799   Min.   :2021-05-12  
-    ##  1st Qu.: 34.0   1st Qu.:0.011912   1st Qu.:2021-06-16  
-    ##  Median : 89.0   Median :0.026446   Median :2021-06-30  
-    ##  Mean   :134.2   Mean   :0.123119   Mean   :2021-06-29  
-    ##  3rd Qu.:143.0   3rd Qu.:0.082374   3rd Qu.:2021-07-22  
-    ##  Max.   :643.0   Max.   :0.923759   Max.   :2021-07-29  
-    ##  NA's   :12      NA's   :12         NA's   :12
+    ##       date                cases        cases_available        seq_total       seq_voc     
+    ##  Min.   :2021-03-20   Min.   :  4181   Min.   :2021-03-20   Min.   : 452   Min.   :  3.0  
+    ##  1st Qu.:2021-05-01   1st Qu.: 22631   1st Qu.:2021-05-01   1st Qu.:1801   1st Qu.: 34.0  
+    ##  Median :2021-05-15   Median : 77261   Median :2021-05-15   Median :3616   Median : 89.0  
+    ##  Mean   :2021-05-22   Mean   : 77741   Mean   :2021-05-22   Mean   :2992   Mean   :134.2  
+    ##  3rd Qu.:2021-06-10   3rd Qu.:131887   3rd Qu.:2021-06-10   3rd Qu.:4088   3rd Qu.:143.0  
+    ##  Max.   :2021-09-11   Max.   :145568   Max.   :2021-09-11   Max.   :4547   Max.   :643.0  
+    ##                                                             NA's   :12     NA's   :12     
+    ##    share_voc        seq_available       
+    ##  Min.   :0.000799   Min.   :2021-05-12  
+    ##  1st Qu.:0.011912   1st Qu.:2021-06-16  
+    ##  Median :0.026446   Median :2021-06-30  
+    ##  Mean   :0.123119   Mean   :2021-06-29  
+    ##  3rd Qu.:0.082374   3rd Qu.:2021-07-22  
+    ##  Max.   :0.923759   Max.   :2021-07-29  
+    ##  NA's   :12         NA's   :12
 
 ``` r
 # plot cases

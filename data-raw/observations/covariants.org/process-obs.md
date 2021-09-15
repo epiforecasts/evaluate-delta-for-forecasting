@@ -6,20 +6,6 @@ library(data.table)
 library(jsonlite)
 library(gh)
 library(purrr)
-```
-
-    ## 
-    ## Attaching package: 'purrr'
-
-    ## The following object is masked from 'package:jsonlite':
-    ## 
-    ##     flatten
-
-    ## The following object is masked from 'package:data.table':
-    ## 
-    ##     transpose
-
-``` r
 library(ggplot2)
 library(here)
 ```
@@ -54,13 +40,20 @@ set(cases, j = c("value"), value = NULL)
 summary(cases)
 ```
 
-    ##    location         location_name           date                cases        cases_available     
-    ##  Length:1184        Length:1184        Min.   :2021-01-02   Min.   :   703   Min.   :2021-01-02  
-    ##  Class :character   Class :character   1st Qu.:2021-03-06   1st Qu.:  7568   1st Qu.:2021-03-06  
-    ##  Mode  :character   Mode  :character   Median :2021-05-08   Median : 17761   Median :2021-05-08  
-    ##                                        Mean   :2021-05-08   Mean   : 22682   Mean   :2021-05-08  
-    ##                                        3rd Qu.:2021-07-10   3rd Qu.: 32887   3rd Qu.:2021-07-10  
-    ##                                        Max.   :2021-09-11   Max.   :111257   Max.   :2021-09-11
+    ##    location         location_name           date                cases       
+    ##  Length:1184        Length:1184        Min.   :2021-01-02   Min.   :   703  
+    ##  Class :character   Class :character   1st Qu.:2021-03-06   1st Qu.:  7568  
+    ##  Mode  :character   Mode  :character   Median :2021-05-08   Median : 17761  
+    ##                                        Mean   :2021-05-08   Mean   : 22682  
+    ##                                        3rd Qu.:2021-07-10   3rd Qu.: 32887  
+    ##                                        Max.   :2021-09-11   Max.   :111257  
+    ##  cases_available     
+    ##  Min.   :2021-01-02  
+    ##  1st Qu.:2021-03-06  
+    ##  Median :2021-05-08  
+    ##  Mean   :2021-05-08  
+    ##  3rd Qu.:2021-07-10  
+    ##  Max.   :2021-09-11
 
 # Sequence notification data
 
@@ -71,15 +64,16 @@ summary(cases)
 <!-- end list -->
 
 ``` r
-download_covariants_sequences <- function(sha, path = "cluster_tables/21A.Delta_data.json") {
+download_covariants_sequences <- function(sha, path = "cluster_tables/21A.Delta_data.json") { # nolint
   if (missing(sha)) {
     url <- paste0(
       "https://raw.githubusercontent.com/hodcroftlab/covariants/master/", path
     )
-  }else{
+  } else {
     url <- paste(
       "https://raw.githubusercontent.com/hodcroftlab/covariants",
-       sha, path, sep = "/"
+      sha, path,
+      sep = "/"
     )
   }
   sequences <- jsonlite::fromJSON(url)
@@ -129,9 +123,7 @@ latest_sequences
 <!-- end list -->
 
 ``` r
-covariants_file_commits <- function(
-  path = "cluster_tables/21A.Delta_data.json"
-) {
+covariants_file_commits <- function(path = "cluster_tables/21A.Delta_data.json") { # nolint
   commits <- gh::gh(
     "/repos/hodcroftlab/covariants/commits?path={path}",
     owner = "hodcroftlab",
@@ -139,14 +131,17 @@ covariants_file_commits <- function(
     path = path
   )
 
-  commits <- purrr::map(commits, 
-    ~ data.table(date = as.Date(as.character(.$commit$committer$date)),
-                 datetime = lubridate::as_datetime(
-                   as.character(.$commit$committer$date)
-                  ), 
-                 author = .$commit$committer$name,
-                 message = .$commit$message,
-                 sha = .$sha)
+  commits <- purrr::map(
+    commits,
+    ~ data.table(
+      date = as.Date(as.character(.$commit$committer$date)),
+      datetime = lubridate::as_datetime(
+        as.character(.$commit$committer$date)
+      ),
+      author = .$commit$committer$name,
+      message = .$commit$message,
+      sha = .$sha
+    )
   )
   commits <- data.table::rbindlist(commits)
   return(commits[])
@@ -156,38 +151,70 @@ delta_sequence_commits <- covariants_file_commits()
 delta_sequence_commits
 ```
 
-    ##           date            datetime        author                                         message
-    ##  1: 2021-09-13 2021-09-13 23:21:26 Emma Hodcroft                                new data 13 sept
-    ##  2: 2021-09-13 2021-09-13 22:23:18 Emma Hodcroft                     reverting to previous state
-    ##  3: 2021-09-13 2021-09-13 21:25:16 Emma Hodcroft                                new data 13 Sept
-    ##  4: 2021-09-09 2021-09-09 19:53:16 Emma Hodcroft                                 new data 9 sept
-    ##  5: 2021-09-08 2021-09-08 09:09:40 Emma Hodcroft                                 new data 7 Sept
-    ##  6: 2021-09-02 2021-09-02 20:56:47 Emma Hodcroft                                 new data 2 Sept
-    ##  7: 2021-08-31 2021-08-31 17:23:10 Emma Hodcroft                                 new data 31 aug
-    ##  8: 2021-08-27 2021-08-27 11:41:45 Emma Hodcroft                                 new data 26 Aug
-    ##  9: 2021-08-24 2021-08-24 16:03:34 Emma Hodcroft                                 new data 24 Aug
-    ## 10: 2021-08-19 2021-08-19 10:18:28 Emma Hodcroft                                 new data 18 aug
-    ## 11: 2021-08-16 2021-08-16 13:42:49 Emma Hodcroft                                 new data 16 aug
-    ## 12: 2021-08-12 2021-08-12 17:20:26 Emma Hodcroft                                 new data 12 Aug
-    ## 13: 2021-08-07 2021-08-07 19:06:34 Emma Hodcroft                                  new data 9 Aug
-    ## 14: 2021-08-07 2021-08-07 12:00:42 Emma Hodcroft                                  new data 6 aug
-    ## 15: 2021-08-04 2021-08-04 12:40:46 Emma Hodcroft                                  new data 3 aug
-    ## 16: 2021-07-29 2021-07-29 16:36:45 Emma Hodcroft                                new data 28 July
-    ## 17: 2021-07-26 2021-07-26 19:10:57 Emma Hodcroft                                 new data 26 jul
-    ## 18: 2021-07-23 2021-07-23 07:49:40 Emma Hodcroft                                 new data 22 Jul
-    ## 19: 2021-07-20 2021-07-20 12:31:24 Emma Hodcroft                                 new data 19 jul
-    ## 20: 2021-07-19 2021-07-19 17:30:03 Emma Hodcroft                                 new data 16 Jul
-    ## 21: 2021-07-15 2021-07-15 13:45:20 Emma Hodcroft                                 new data 14 Jul
-    ## 22: 2021-07-12 2021-07-12 16:09:10 Emma Hodcroft                    data replotted new var rules
-    ## 23: 2021-07-12 2021-07-12 12:09:29 Emma Hodcroft                                  new data 9 jul
-    ## 24: 2021-07-09 2021-07-09 10:23:51 Emma Hodcroft                                  new data 8 jul
-    ## 25: 2021-07-06 2021-07-06 12:28:54 Emma Hodcroft                                 new data 6 july
-    ## 26: 2021-06-30 2021-06-30 18:39:12 Emma Hodcroft                                 new data 29 Jun
-    ## 27: 2021-06-28 2021-06-28 09:59:18 Emma Hodcroft                                 new data 26 jun
-    ## 28: 2021-06-25 2021-06-25 16:42:37 Emma Hodcroft                                new data 24 June
-    ## 29: 2021-06-24 2021-06-24 09:28:09 Emma Hodcroft new data generated using NextClade designations
-    ## 30: 2021-06-23 2021-06-23 15:26:47 Emma Hodcroft                                new data 22 June
-    ##           date            datetime        author                                         message
+    ##           date            datetime        author
+    ##  1: 2021-09-13 2021-09-13 23:21:26 Emma Hodcroft
+    ##  2: 2021-09-13 2021-09-13 22:23:18 Emma Hodcroft
+    ##  3: 2021-09-13 2021-09-13 21:25:16 Emma Hodcroft
+    ##  4: 2021-09-09 2021-09-09 19:53:16 Emma Hodcroft
+    ##  5: 2021-09-08 2021-09-08 09:09:40 Emma Hodcroft
+    ##  6: 2021-09-02 2021-09-02 20:56:47 Emma Hodcroft
+    ##  7: 2021-08-31 2021-08-31 17:23:10 Emma Hodcroft
+    ##  8: 2021-08-27 2021-08-27 11:41:45 Emma Hodcroft
+    ##  9: 2021-08-24 2021-08-24 16:03:34 Emma Hodcroft
+    ## 10: 2021-08-19 2021-08-19 10:18:28 Emma Hodcroft
+    ## 11: 2021-08-16 2021-08-16 13:42:49 Emma Hodcroft
+    ## 12: 2021-08-12 2021-08-12 17:20:26 Emma Hodcroft
+    ## 13: 2021-08-07 2021-08-07 19:06:34 Emma Hodcroft
+    ## 14: 2021-08-07 2021-08-07 12:00:42 Emma Hodcroft
+    ## 15: 2021-08-04 2021-08-04 12:40:46 Emma Hodcroft
+    ## 16: 2021-07-29 2021-07-29 16:36:45 Emma Hodcroft
+    ## 17: 2021-07-26 2021-07-26 19:10:57 Emma Hodcroft
+    ## 18: 2021-07-23 2021-07-23 07:49:40 Emma Hodcroft
+    ## 19: 2021-07-20 2021-07-20 12:31:24 Emma Hodcroft
+    ## 20: 2021-07-19 2021-07-19 17:30:03 Emma Hodcroft
+    ## 21: 2021-07-15 2021-07-15 13:45:20 Emma Hodcroft
+    ## 22: 2021-07-12 2021-07-12 16:09:10 Emma Hodcroft
+    ## 23: 2021-07-12 2021-07-12 12:09:29 Emma Hodcroft
+    ## 24: 2021-07-09 2021-07-09 10:23:51 Emma Hodcroft
+    ## 25: 2021-07-06 2021-07-06 12:28:54 Emma Hodcroft
+    ## 26: 2021-06-30 2021-06-30 18:39:12 Emma Hodcroft
+    ## 27: 2021-06-28 2021-06-28 09:59:18 Emma Hodcroft
+    ## 28: 2021-06-25 2021-06-25 16:42:37 Emma Hodcroft
+    ## 29: 2021-06-24 2021-06-24 09:28:09 Emma Hodcroft
+    ## 30: 2021-06-23 2021-06-23 15:26:47 Emma Hodcroft
+    ##           date            datetime        author
+    ##                                             message
+    ##  1:                                new data 13 sept
+    ##  2:                     reverting to previous state
+    ##  3:                                new data 13 Sept
+    ##  4:                                 new data 9 sept
+    ##  5:                                 new data 7 Sept
+    ##  6:                                 new data 2 Sept
+    ##  7:                                 new data 31 aug
+    ##  8:                                 new data 26 Aug
+    ##  9:                                 new data 24 Aug
+    ## 10:                                 new data 18 aug
+    ## 11:                                 new data 16 aug
+    ## 12:                                 new data 12 Aug
+    ## 13:                                  new data 9 Aug
+    ## 14:                                  new data 6 aug
+    ## 15:                                  new data 3 aug
+    ## 16:                                new data 28 July
+    ## 17:                                 new data 26 jul
+    ## 18:                                 new data 22 Jul
+    ## 19:                                 new data 19 jul
+    ## 20:                                 new data 16 Jul
+    ## 21:                                 new data 14 Jul
+    ## 22:                    data replotted new var rules
+    ## 23:                                  new data 9 jul
+    ## 24:                                  new data 8 jul
+    ## 25:                                 new data 6 july
+    ## 26:                                 new data 29 Jun
+    ## 27:                                 new data 26 jun
+    ## 28:                                new data 24 June
+    ## 29: new data generated using NextClade designations
+    ## 30:                                new data 22 June
+    ##                                             message
     ##                                          sha
     ##  1: 5f60ecf481dfb046ccf3dca5c86b780551f4458a
     ##  2: 8b4cb1438f41b8ed23f2f0bdd5c7012c8a0ffd40
@@ -227,13 +254,14 @@ delta_sequence_commits
 <!-- end list -->
 
 ``` r
-delta_sequences <- delta_sequence_commits[order(date)][,
-   .SD[datetime == max(datetime)], by = date
+sequences <- delta_sequence_commits[order(date)][,
+  .SD[datetime == max(datetime)],
+  by = date
 ]
-setnames(delta_sequences, "date", "seq_available")
-delta_sequences[, data := purrr::map(sha, download_covariants_sequences)]
-delta_sequences <- delta_sequences[, rbindlist(data), by = seq_available]
-delta_sequences
+setnames(sequences, "date", "seq_available")
+sequences[, data := purrr::map(sha, download_covariants_sequences)]
+sequences <- sequences[, rbindlist(data), by = seq_available]
+sequences
 ```
 
     ##        seq_available       location_name       week total_sequences cluster_sequences
@@ -261,4 +289,90 @@ delta_sequences
     ## 76211:                            1                         15
     ## 76212:                            0                         21
 
+  - Select and rename variables of interest.
+
+<!-- end list -->
+
+``` r
+sequences <- sequences[, 
+  .(seq_available = seq_available, 
+    location_name, 
+    week_starting = as.Date(week),
+    week_ending = as.Date(week) + 6,
+    seq_voc = unsmoothed_cluster_sequences,
+    seq_total = unsmoothed_total_sequences)
+][, share_voc := seq_voc / seq_total][]
+sequences
+```
+
+    ##        seq_available       location_name week_starting week_ending seq_voc seq_total
+    ##     1:    2021-06-23               India    2020-04-27  2020-05-03       0       248
+    ##     2:    2021-06-23               India    2020-05-04  2020-05-10       0       218
+    ##     3:    2021-06-23               India    2020-05-11  2020-05-17       0       278
+    ##     4:    2021-06-23               India    2020-05-18  2020-05-24       0       369
+    ##     5:    2021-06-23               India    2020-05-25  2020-05-31       0       357
+    ##    ---                                                                              
+    ## 76208:    2021-09-13 Trinidad and Tobago    2021-07-12  2021-07-18       0         8
+    ## 76209:    2021-09-13 Trinidad and Tobago    2021-07-19  2021-07-25       0         3
+    ## 76210:    2021-09-13 Trinidad and Tobago    2021-07-26  2021-08-01       1        34
+    ## 76211:    2021-09-13 Trinidad and Tobago    2021-08-02  2021-08-08       1        15
+    ## 76212:    2021-09-13 Trinidad and Tobago    2021-08-09  2021-08-15       0        21
+    ##         share_voc
+    ##     1: 0.00000000
+    ##     2: 0.00000000
+    ##     3: 0.00000000
+    ##     4: 0.00000000
+    ##     5: 0.00000000
+    ##    ---           
+    ## 76208: 0.00000000
+    ## 76209: 0.00000000
+    ## 76210: 0.02941176
+    ## 76211: 0.06666667
+    ## 76212: 0.00000000
+
 # Merge, explore, and save data
+
+  - Merge duplicating case data for all sequence versions. Sequences are
+    only available aggregated by week from Sunday. Approximate the same
+    timespan as the case data by changing the weekly reference date
+
+<!-- end list -->
+
+``` r
+adjusted_seq <- copy(sequences)[,
+ date := week_ending - 1][, c("week_starting",  "week_ending") := NULL
+]
+notifications <- merge(cases, adjusted_seq,
+                       by = c("date", "location_name"), all.x = TRUE)
+
+# save to observations folder
+fwrite(notifications, file = here("data/observations/covariants.csv"))
+
+# Summary
+summary(notifications)
+```
+
+    ##       date            location_name        location             cases       
+    ##  Min.   :2021-01-02   Length:16468       Length:16468       Min.   :   703  
+    ##  1st Qu.:2021-02-20   Class :character   Class :character   1st Qu.:  8472  
+    ##  Median :2021-04-10   Mode  :character   Mode  :character   Median : 19189  
+    ##  Mean   :2021-04-15                                         Mean   : 23648  
+    ##  3rd Qu.:2021-06-05                                         3rd Qu.: 32948  
+    ##  Max.   :2021-09-11                                         Max.   :111257  
+    ##                                                                             
+    ##  cases_available      seq_available           seq_voc          seq_total    
+    ##  Min.   :2021-01-02   Min.   :2021-06-23   Min.   :    0.0   Min.   :    1  
+    ##  1st Qu.:2021-02-20   1st Qu.:2021-07-20   1st Qu.:    0.0   1st Qu.:  174  
+    ##  Median :2021-04-10   Median :2021-08-12   Median :    0.0   Median :  594  
+    ##  Mean   :2021-04-15   Mean   :2021-08-09   Mean   :  410.3   Mean   : 1700  
+    ##  3rd Qu.:2021-06-05   3rd Qu.:2021-08-31   3rd Qu.:   36.0   3rd Qu.: 1448  
+    ##  Max.   :2021-09-11   Max.   :2021-09-13   Max.   :33929.0   Max.   :34034  
+    ##                       NA's   :250          NA's   :250       NA's   :250    
+    ##    share_voc     
+    ##  Min.   :0.0000  
+    ##  1st Qu.:0.0000  
+    ##  Median :0.0000  
+    ##  Mean   :0.1693  
+    ##  3rd Qu.:0.1058  
+    ##  Max.   :1.0000  
+    ##  NA's   :250
