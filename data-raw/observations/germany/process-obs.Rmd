@@ -87,7 +87,6 @@ summary(notifications)
 - Plot cases in Germany
 
 ```{r cases}
-# plot cases
 ggplot(unique(notifications[, .(date, cases)])) +
   aes(x = date, y = cases) +
   geom_col(alpha = 0.8) +
@@ -97,7 +96,6 @@ ggplot(unique(notifications[, .(date, cases)])) +
 - Plot proportion of sequences that were Delta by sequence availability date.
 
 ```{r sequences}
-# plot sequences
 ggplot(notifications[!is.na(share_voc)]) +
   aes(x = date, y = share_voc, col = seq_available, group = seq_available) +
   geom_point(size = 1.1, alpha = 0.8) +
@@ -109,7 +107,6 @@ ggplot(notifications[!is.na(share_voc)]) +
 - Plot relative change in the proportion of sequences that were Delta between each release of sequence data and the latest available release.
 
 ```{r sequences-change} 
-# plot sequence % change based on latest available
 latest_seq <- notifications[, .SD[seq_available == max(seq_available)],
   by = date
 ]

@@ -211,7 +211,6 @@ ggplot(not_cases) +
 
 - Case notifications normalised by maximum number of notifications in that location.
 ```{r normalised-by-max}
-# plot cases
 ggplot(not_cases[, cases := cases / max(cases), by = "location_name"]) +
   aes(x = date, y = cases, col = location_name) +
   geom_line(alpha = 0.6) +
@@ -222,12 +221,10 @@ ggplot(not_cases[, cases := cases / max(cases), by = "location_name"]) +
 - Share of sequences that were positive for the Delta variant based on the lastest available data.
 
 ```{r latest-share-voc}
-# plot cases
 ggplot(notifications[seq_available == max(seq_available, na.rm = TRUE)]) +
   aes(x = date, y = share_voc, col = location_name) +
   geom_line(alpha = 0.6) +
   theme_bw() +
-  geom_vline(aes(xintercept = seq_available), linetype = 1) +
   theme(legend.position = "bottom")
 ```
 
@@ -235,11 +232,60 @@ ggplot(notifications[seq_available == max(seq_available, na.rm = TRUE)]) +
 - Share of sequences that were positive for the Delta variant based on the first available data.
 
 ```{r first-share-voc}
-# plot cases
 ggplot(notifications[seq_available == min(seq_available, na.rm = TRUE)]) +
   aes(x = date, y = share_voc, col = location_name) +
   geom_line(alpha = 0.6) +
   theme_bw() +
-  geom_vline(aes(xintercept = seq_available), linetype = 1) +
   theme(legend.position = "bottom")
+```
+
+- Share of sequences positive for Delta by availability
+
+```{r share-voc-by-avail, fig.width = 16, fig.height = 16}
+ggplot(
+  notifications[!is.na(seq_available)][
+    ,
+    seq_available := as.factor(seq_available)
+  ]
+) +
+  aes(x = date, y = share_voc, col = seq_available) +
+  geom_line(alpha = 0.6) +
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  facet_wrap(vars(location_name))
+```
+
+- Relative change in the proportion of sequences that were Delta between each release of sequence data and the latest available release.
+
+```{r sequences-change, fig.width = 16, fig.height = 16} 
+latest_seq <- notifications[,
+  n := .N,
+  by = c("date", "location_name")
+][, .SD[seq_available == max(seq_available)],
+  by = c("date", "location_name")
+][n > 1]
+
+seq_change <- merge(
+  notifications[!is.na(seq_available)][
+    ,
+    seq_available := as.factor(seq_available)
+  ][
+    ,
+    .(location_name, date, share_voc, seq_available)
+  ],
+  latest_seq[, .(location_name, date, latest_voc = share_voc)],
+  by = c("location_name", "date")
+)
+
+seq_change[, per_latest := share_voc / latest_voc]
+
+seq_change <- seq_change[date <= as.Date("2021-09-01")]
+
+ggplot(seq_change) +
+  aes(x = date, y = per_latest, col = seq_available, group = seq_available) +
+  geom_point(size = 1.1, alpha = 0.8) +
+  geom_line(alpha = 0.6) +
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  facet_wrap(vars(location_name), scales = "free")
 ```
