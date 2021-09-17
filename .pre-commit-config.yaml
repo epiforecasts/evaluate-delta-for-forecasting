@@ -20,6 +20,8 @@ repos:
     hooks: 
     -   id: check-added-large-files
         args: ['--maxkb=200']
+        exclude: 'data/observations/covariants.csv'
+        exclude: 'data-raw/observations/covariants.org/process-obs_files'
     -   id: end-of-file-fixer
         exclude: '\.Rd'
 -   repo: local

@@ -1,19 +1,19 @@
 summarise_source_targets <- list(
   # gather summaries and forecasts
-  tar_target(
+  tar_combine(
     fit_summary,
-    fit_summary_germany
+    combined_targets$fit_summary
   ),
-  tar_target(
+  tar_combine(
     forecast_cases,
-    forecast_cases_germany
+    combined_targets$forecast_cases
   ),
-  tar_target(
+  tar_combine(
     forecast_scores,
-    forecast_scores_germany
+    combined_targets$forecast_scores
   ),
-  tar_target(
+  tar_combine(
     rwis,
-    rwis_germany
+    combined_targets$rwis
   )
 )

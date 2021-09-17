@@ -1081,13 +1081,6 @@
       "Repository": "RSPM",
       "Hash": "849038f0839134ab35e719a9820005a6"
     },
-    "readxl": {
-      "Package": "readxl",
-      "Version": "1.3.1",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "63537c483c2dbec8d9e3183b3735254a"
-    },
     "rematch": {
       "Package": "rematch",
       "Version": "1.0.1",

@@ -3,6 +3,7 @@ library(targets)
 library(tarchetypes)
 library(future)
 library(future.callr)
+library(here)
 plan(callr)
 
 # load required packages and watch forecast.vocs for changes
@@ -14,16 +15,17 @@ tar_option_set(
 )
 
 # load functions
-functions <- list.files("R", full.names = TRUE)
+functions <- list.files(here("R"), full.names = TRUE)
 purrr::walk(functions, source)
 
 # load target modules
-targets <- list.files("targets", full.names = TRUE)
+targets <- list.files(here("targets"), full.names = TRUE)
 targets <- grep("*\\.R", targets, value = TRUE)
+targets <- targets[!grepl("targets/summarise_sources.R", targets)]
 purrr::walk(targets, source)
 
 # datasets of interest
-sources <- list(source = "germany")
+sources <- list(source = c("Germany", "United Kingdom", "France", "Italy"))
 
 # input and control targets
 meta_targets <- list(
@@ -47,7 +49,7 @@ meta_targets <- list(
     ),
     deployment = "main"
   ),
-  # Arguments passed to `forecast()` to control retrospecive forecasting
+  # Arguments passed to `forecast()` to control retrospective forecasting
   tar_target(
     retro_args,
     list(
@@ -65,10 +67,15 @@ combined_targets <- tar_map(
     scenario_forecast_targets,
     summarise_forecast_targets,
     score_forecast_targets
-  )
+  ),
+  unlist = FALSE
 )
-# Combine and evaluate targets
-c(
+
+# Load summary targets
+source(here("targets/summarise_sources.R"))
+
+# Combine, evaluate, and summarise targets
+list(
   meta_targets,
   scenario_targets,
   combined_targets,

@@ -36,7 +36,7 @@ set(cases, j = c("value", "location", "location_name"), value = NULL)
 summary(cases)
 ```
 
-# Sequence notification data
+## Sequence notification data
 
 - Sequence data sourced from RKI reports see the SI for more details.
 ```{r}
@@ -65,20 +65,20 @@ sequences[, share_voc := seq_voc / seq_total][, est_seq_total := NULL]
 # Include sequences from 18th of April
 sequences <- sequences[date >= as.Date("2021-04-18")]
 
-# Sequences are only available aggregated by week from Sunday
-# Approximate the same timespan as the case data by changing the
-# weekly reference date
-sequences[, date := date - 1]
-
 # Summary
 summary(sequences)
 ```
 
-# Merge, explore, and save data
+## Merge, explore, and save data
 
+- Merge duplicating case data for all sequence versions. Sequences are only available aggregated by week from Sunday. Approximate the same timespan as the case data by changing the weekly reference date
 ```{r}
-# merge duplicating case data for all sequence versions
-notifications <- merge(cases, sequences, by = "date", all.x = TRUE)
+notifications <- merge(cases, copy(sequences)[, date := date - 1],
+  by = "date", all.x = TRUE
+)
+
+notifications[, `:=`(location_name = "Germany", location = "DE")]
+setcolorder(notifications, c("date", "location_name", "location"))
 
 # save to observations folder
 fwrite(notifications, file = here("data/observations/germany.csv"))
@@ -87,16 +87,18 @@ fwrite(notifications, file = here("data/observations/germany.csv"))
 summary(notifications)
 ```
 
-```{r cases-germany}
-# plot cases
+- Plot cases in Germany
+
+```{r cases}
 ggplot(unique(notifications[, .(date, cases)])) +
   aes(x = date, y = cases) +
   geom_col(alpha = 0.8) +
   theme_bw()
 ```
 
-```{r sequences-germany}
-# plot sequences
+- Plot proportion of sequences that were Delta by sequence availability date.
+
+```{r sequences}
 ggplot(notifications[!is.na(share_voc)]) +
   aes(x = date, y = share_voc, col = seq_available, group = seq_available) +
   geom_point(size = 1.1, alpha = 0.8) +
@@ -105,8 +107,9 @@ ggplot(notifications[!is.na(share_voc)]) +
   theme(legend.position = "bottom")
 ```
 
-```{r sequences-change-germany} 
-# plot sequence % change based on latest available
+- Plot relative change in the proportion of sequences that were Delta between each release of sequence data and the latest available release.
+
+```{r sequences-change} 
 latest_seq <- notifications[, .SD[seq_available == max(seq_available)],
   by = date
 ]
