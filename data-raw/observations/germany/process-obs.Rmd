@@ -77,6 +77,9 @@ notifications <- merge(cases, copy(sequences)[, date := date - 1],
   by = "date", all.x = TRUE
 )
 
+notifications[, `:=`(location_name = "Germany", location = "DE")]
+setcolorder(notifications, c("date", "location_name", "location"))
+
 # save to observations folder
 fwrite(notifications, file = here("data/observations/germany.csv"))
 

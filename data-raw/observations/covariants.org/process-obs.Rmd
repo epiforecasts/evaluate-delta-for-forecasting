@@ -218,7 +218,8 @@ adjusted_seq <- copy(filt_sequences)[
 notifications <- merge(filt_cases, adjusted_seq,
   by = c("date", "location_name"), all.x = TRUE
 )
-
+setorder(notifications, seq_available)
+setorder(notifications, location_name, date)
 setorderv(notifications, c("location_name", "seq_available", "date"))
 ```
 

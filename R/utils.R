@@ -1,8 +1,26 @@
-load_obs <- function(source) {
+load_obs <- function(location, path = "data/observations", source) {
+  if (missing(location)) {
+    location <- NULL
+  }
+  sources <- c("germany", "covariants")
+  if (missing(source)) {
+    if (location %in% "Germany") {
+      source <- "germany"
+    } else {
+      source <- "covariants"
+    }
+  }
   source <- match.arg(source,
-    choices = "germany"
+    choices = sources
   )
-  data.table::fread(
-    here::here("data", paste0(source, ".csv"))
+  source_path <- here::here(path, paste0(source, ".csv"))
+  message("Loading observations from: ", source_path)
+  obs <- data.table::fread(
+    source_path
   )
+  if (!is.null(location)) {
+    loc <- location
+    obs <- obs[location_name %in% loc]
+  }
+  return(obs)
 }

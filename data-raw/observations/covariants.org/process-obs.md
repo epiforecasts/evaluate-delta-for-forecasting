@@ -453,7 +453,8 @@ filt_sequences <- merge(
   by = "location_name"
 )
 filt_sequences[is.na(end_date), end_date := max(week_ending),
-                 by = "location_name"]
+  by = "location_name"
+]
 filt_sequences <- filt_sequences[week_ending <= end_date][
   ,
   end_date := NULL
@@ -467,15 +468,16 @@ filt_sequences <- filt_sequences[week_ending <= end_date][
 <!-- end list -->
 
 ``` r
-filt_cases <- Reduce(merge, 
+filt_cases <- Reduce(
+  merge,
   list(
-    cases, 
+    cases,
     first_seq[, .(location_name, intro_date = week_ending)],
     last_seq[, .(location_name, end_date = week_ending)]
   )
 )
 filt_cases <- filt_cases[date >= (intro_date - 7 * 4)]
-filt_cases <- filt_cases[date <= (end_date + 7*4)]
+filt_cases <- filt_cases[date <= (end_date + 7 * 4)]
 filt_cases[, c("intro_date", "end_date") := NULL]
 ```
 
@@ -494,7 +496,8 @@ adjusted_seq <- copy(filt_sequences)[
 notifications <- merge(filt_cases, adjusted_seq,
   by = c("date", "location_name"), all.x = TRUE
 )
-
+setorder(notifications, seq_available)
+setorder(notifications, location_name, date)
 setorderv(notifications, c("location_name", "seq_available", "date"))
 ```
 

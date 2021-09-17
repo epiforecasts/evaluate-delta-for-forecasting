@@ -38,20 +38,13 @@ set(cases, j = c("value", "location", "location_name"), value = NULL)
 summary(cases)
 ```
 
-    ##       date                cases       
-    ##  Min.   :2021-03-20   Min.   :  4181  
-    ##  1st Qu.:2021-05-02   1st Qu.: 14879  
-    ##  Median :2021-06-15   Median : 51086  
-    ##  Mean   :2021-06-15   Mean   : 58148  
-    ##  3rd Qu.:2021-07-29   3rd Qu.:102188  
-    ##  Max.   :2021-09-11   Max.   :145568  
-    ##  cases_available     
-    ##  Min.   :2021-03-20  
-    ##  1st Qu.:2021-05-02  
-    ##  Median :2021-06-15  
-    ##  Mean   :2021-06-15  
-    ##  3rd Qu.:2021-07-29  
-    ##  Max.   :2021-09-11
+    ##       date                cases        cases_available     
+    ##  Min.   :2021-03-20   Min.   :  4181   Min.   :2021-03-20  
+    ##  1st Qu.:2021-05-02   1st Qu.: 14879   1st Qu.:2021-05-02  
+    ##  Median :2021-06-15   Median : 51086   Median :2021-06-15  
+    ##  Mean   :2021-06-15   Mean   : 58148   Mean   :2021-06-15  
+    ##  3rd Qu.:2021-07-29   3rd Qu.:102188   3rd Qu.:2021-07-29  
+    ##  Max.   :2021-09-11   Max.   :145568   Max.   :2021-09-11
 
 ## Sequence notification data
 
@@ -89,27 +82,13 @@ sequences <- sequences[date >= as.Date("2021-04-18")]
 summary(sequences)
 ```
 
-    ##       date              seq_total   
-    ##  Min.   :2021-04-18   Min.   : 452  
-    ##  1st Qu.:2021-05-02   1st Qu.:1801  
-    ##  Median :2021-05-16   Median :3616  
-    ##  Mean   :2021-05-19   Mean   :2992  
-    ##  3rd Qu.:2021-06-06   3rd Qu.:4088  
-    ##  Max.   :2021-07-18   Max.   :4547  
-    ##     seq_voc        share_voc        
-    ##  Min.   :  3.0   Min.   :0.0007985  
-    ##  1st Qu.: 34.0   1st Qu.:0.0119119  
-    ##  Median : 89.0   Median :0.0264457  
-    ##  Mean   :134.2   Mean   :0.1231187  
-    ##  3rd Qu.:143.0   3rd Qu.:0.0823743  
-    ##  Max.   :643.0   Max.   :0.9237589  
-    ##  seq_available       
-    ##  Min.   :2021-05-12  
-    ##  1st Qu.:2021-06-16  
-    ##  Median :2021-06-30  
-    ##  Mean   :2021-06-29  
-    ##  3rd Qu.:2021-07-22  
-    ##  Max.   :2021-07-29
+    ##       date              seq_total       seq_voc        share_voc         seq_available       
+    ##  Min.   :2021-04-18   Min.   : 452   Min.   :  3.0   Min.   :0.0007985   Min.   :2021-05-12  
+    ##  1st Qu.:2021-05-02   1st Qu.:1801   1st Qu.: 34.0   1st Qu.:0.0119119   1st Qu.:2021-06-16  
+    ##  Median :2021-05-16   Median :3616   Median : 89.0   Median :0.0264457   Median :2021-06-30  
+    ##  Mean   :2021-05-19   Mean   :2992   Mean   :134.2   Mean   :0.1231187   Mean   :2021-06-29  
+    ##  3rd Qu.:2021-06-06   3rd Qu.:4088   3rd Qu.:143.0   3rd Qu.:0.0823743   3rd Qu.:2021-07-22  
+    ##  Max.   :2021-07-18   Max.   :4547   Max.   :643.0   Max.   :0.9237589   Max.   :2021-07-29
 
 ## Merge, explore, and save data
 
@@ -124,6 +103,9 @@ notifications <- merge(cases, copy(sequences)[, date := date - 1],
   by = "date", all.x = TRUE
 )
 
+notifications[, `:=`(location_name = "Germany", location = "DE")]
+setcolorder(notifications, c("date", "location_name", "location"))
+
 # save to observations folder
 fwrite(notifications, file = here("data/observations/germany.csv"))
 
@@ -131,38 +113,22 @@ fwrite(notifications, file = here("data/observations/germany.csv"))
 summary(notifications)
 ```
 
-    ##       date                cases       
-    ##  Min.   :2021-03-20   Min.   :  4181  
-    ##  1st Qu.:2021-05-01   1st Qu.: 22631  
-    ##  Median :2021-05-15   Median : 77261  
-    ##  Mean   :2021-05-22   Mean   : 77741  
-    ##  3rd Qu.:2021-06-10   3rd Qu.:131887  
-    ##  Max.   :2021-09-11   Max.   :145568  
-    ##                                       
-    ##  cases_available        seq_total   
-    ##  Min.   :2021-03-20   Min.   : 452  
-    ##  1st Qu.:2021-05-01   1st Qu.:1801  
-    ##  Median :2021-05-15   Median :3616  
-    ##  Mean   :2021-05-22   Mean   :2992  
-    ##  3rd Qu.:2021-06-10   3rd Qu.:4088  
-    ##  Max.   :2021-09-11   Max.   :4547  
-    ##                       NA's   :12    
-    ##     seq_voc        share_voc       
-    ##  Min.   :  3.0   Min.   :0.000799  
-    ##  1st Qu.: 34.0   1st Qu.:0.011912  
-    ##  Median : 89.0   Median :0.026446  
-    ##  Mean   :134.2   Mean   :0.123119  
-    ##  3rd Qu.:143.0   3rd Qu.:0.082374  
-    ##  Max.   :643.0   Max.   :0.923759  
-    ##  NA's   :12      NA's   :12        
-    ##  seq_available       
-    ##  Min.   :2021-05-12  
-    ##  1st Qu.:2021-06-16  
-    ##  Median :2021-06-30  
-    ##  Mean   :2021-06-29  
-    ##  3rd Qu.:2021-07-22  
-    ##  Max.   :2021-07-29  
-    ##  NA's   :12
+    ##       date            location_name        location             cases        cases_available     
+    ##  Min.   :2021-03-20   Length:114         Length:114         Min.   :  4181   Min.   :2021-03-20  
+    ##  1st Qu.:2021-05-01   Class :character   Class :character   1st Qu.: 22631   1st Qu.:2021-05-01  
+    ##  Median :2021-05-15   Mode  :character   Mode  :character   Median : 77261   Median :2021-05-15  
+    ##  Mean   :2021-05-22                                         Mean   : 77741   Mean   :2021-05-22  
+    ##  3rd Qu.:2021-06-10                                         3rd Qu.:131887   3rd Qu.:2021-06-10  
+    ##  Max.   :2021-09-11                                         Max.   :145568   Max.   :2021-09-11  
+    ##                                                                                                  
+    ##    seq_total       seq_voc        share_voc        seq_available       
+    ##  Min.   : 452   Min.   :  3.0   Min.   :0.000799   Min.   :2021-05-12  
+    ##  1st Qu.:1801   1st Qu.: 34.0   1st Qu.:0.011912   1st Qu.:2021-06-16  
+    ##  Median :3616   Median : 89.0   Median :0.026446   Median :2021-06-30  
+    ##  Mean   :2992   Mean   :134.2   Mean   :0.123119   Mean   :2021-06-29  
+    ##  3rd Qu.:4088   3rd Qu.:143.0   3rd Qu.:0.082374   3rd Qu.:2021-07-22  
+    ##  Max.   :4547   Max.   :643.0   Max.   :0.923759   Max.   :2021-07-29  
+    ##  NA's   :12     NA's   :12      NA's   :12         NA's   :12
 
   - Plot cases in Germany
 
