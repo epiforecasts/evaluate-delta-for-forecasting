@@ -161,15 +161,52 @@ filt_sequences <- filt_sequences[week_ending >= intro_date][
 ][]
 ```
 
-- Filter case notifications to start 4 weeks prior to the introduction date of the Delta variant.
+- Find the week in each location when 99% of sequences are positive for Delta in the final sequence data for two consequetive weeks and more than 10 sequences are available.
 
 ```{r}
-filt_cases <- merge(
-  cases, first_seq[, .(location_name, intro_date = week_ending)],
-  by = c("location_name")
-)
-filt_cases <- filt_cases[date >= (intro_date - 7 * 4)][, intro_date := NULL]
+last_seq <- sequences[,
+  .SD[seq_total > 10][
+    share_voc >= 0.99 & shift(share_voc, type = "lead") >= 0.99
+  ][
+    order(week_ending)
+  ][1, ],
+  by = "location_name"
+][!is.na(seq_voc)][]
+last_seq
 ```
+
+- Restrict included sequences to stop at these dates.
+
+```{r}
+filt_sequences <- merge(
+  sequences, last_seq[, .(location_name, end_date = week_ending)],
+  by = "location_name"
+)
+filt_sequences[is.na(end_date), end_date := max(week_ending),
+  by = "location_name"
+]
+filt_sequences <- filt_sequences[week_ending <= end_date][
+  ,
+  end_date := NULL
+][]
+```
+
+- Filter case notifications to start 4 weeks prior to the introduction date of the Delta variant and to stop 4 weeks after Delta has become dominant.
+
+```{r}
+filt_cases <- Reduce(
+  merge,
+  list(
+    cases,
+    first_seq[, .(location_name, intro_date = week_ending)],
+    last_seq[, .(location_name, end_date = week_ending)]
+  )
+)
+filt_cases <- filt_cases[date >= (intro_date - 7 * 4)]
+filt_cases <- filt_cases[date <= (end_date + 7 * 4)]
+filt_cases[, c("intro_date", "end_date") := NULL]
+```
+
 
 - Merge duplicating case data for all sequence versions. Sequences are only available aggregated by week from Sunday. Approximate the same timespan as the case data by changing the weekly reference date
 ```{r}
