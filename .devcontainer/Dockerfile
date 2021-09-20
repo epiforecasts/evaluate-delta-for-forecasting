@@ -48,5 +48,6 @@ RUN Rscript -e 'devtools::install_github("mdlincoln/docthis")'
 RUN Rscript -e 'devtools::install_github("lorenzwalthert/precommit")'
 
 # install dependencies
+COPY renv renv
 COPY renv.lock renv.lock
 RUN R -e 'renv::restore()'
