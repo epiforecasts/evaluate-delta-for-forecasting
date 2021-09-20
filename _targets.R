@@ -25,7 +25,7 @@ targets <- targets[!grepl("targets/summarise_sources.R", targets)]
 purrr::walk(targets, source)
 
 # datasets of interest
-sources <- list(source = c("Germany", "United Kingdom", "France", "Italy"))
+sources <- list(source = c("Germany", "United Kingdom", "Belgium", "Italy"))
 
 # input and control targets
 meta_targets <- list(
@@ -44,8 +44,8 @@ meta_targets <- list(
   tar_target(
     forecast_args,
     list(
-      horizon = 4, adapt_delta = 0.9, max_treedepth = 15,
-      parallel_chains = 1, plot = FALSE, chains = 2, keep_fit = FALSE
+      horizon = 4, adapt_delta = 0.99, max_treedepth = 15,
+      parallel_chains = 1, chains = 2, keep_fit = FALSE
     ),
     deployment = "main"
   ),
