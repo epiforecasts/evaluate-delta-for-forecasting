@@ -50,5 +50,4 @@ RUN Rscript -e 'devtools::install_github("lorenzwalthert/precommit")'
 # install dependencies
 COPY renv renv
 COPY renv.lock renv.lock
-RUN R renv/activate.R
-RUN R -e 'renv::restore()'
+RUN R -e 'source("renv/activate.R"); renv::restore()'
