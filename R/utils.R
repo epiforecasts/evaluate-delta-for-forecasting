@@ -3,7 +3,7 @@ load_obs <- function(location, path = "data/observations",
   if (missing(location)) {
     location <- NULL
   }
-  sources <- c("germany", "covariants")
+  sources <- c("rki", "covariants")
   source <- match.arg(source,
     choices = sources
   )
