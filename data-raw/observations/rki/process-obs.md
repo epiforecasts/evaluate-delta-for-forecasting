@@ -3,9 +3,16 @@ Aggregate case notification and sequence data for Germany
 
 ``` r
 library(data.table)
+```
+
+    ## data.table 1.14.0 using 3 threads (see ?getDTthreads).  Latest news: r-datatable.com
+
+``` r
 library(ggplot2)
 library(here)
 ```
+
+    ## here() starts at /workspaces/evaluate-delta-for-forecasting
 
 ## Case notification data
 
@@ -40,11 +47,11 @@ summary(cases)
 
     ##       date                cases        cases_available     
     ##  Min.   :2021-03-20   Min.   :  4181   Min.   :2021-03-20  
-    ##  1st Qu.:2021-05-02   1st Qu.: 14879   1st Qu.:2021-05-02  
-    ##  Median :2021-06-15   Median : 51086   Median :2021-06-15  
-    ##  Mean   :2021-06-15   Mean   : 58148   Mean   :2021-06-15  
-    ##  3rd Qu.:2021-07-29   3rd Qu.:102188   3rd Qu.:2021-07-29  
-    ##  Max.   :2021-09-11   Max.   :145568   Max.   :2021-09-11
+    ##  1st Qu.:2021-05-06   1st Qu.: 15328   1st Qu.:2021-05-06  
+    ##  Median :2021-06-22   Median : 55568   Median :2021-06-22  
+    ##  Mean   :2021-06-22   Mean   : 58220   Mean   :2021-06-22  
+    ##  3rd Qu.:2021-08-08   3rd Qu.: 92281   3rd Qu.:2021-08-08  
+    ##  Max.   :2021-09-25   Max.   :145568   Max.   :2021-09-25
 
 ## Sequence notification data
 
@@ -82,13 +89,22 @@ sequences <- sequences[date >= as.Date("2021-04-18")]
 summary(sequences)
 ```
 
-    ##       date              seq_total       seq_voc        share_voc         seq_available       
-    ##  Min.   :2021-04-18   Min.   : 452   Min.   :  3.0   Min.   :0.0007985   Min.   :2021-05-12  
-    ##  1st Qu.:2021-05-02   1st Qu.:1801   1st Qu.: 34.0   1st Qu.:0.0119119   1st Qu.:2021-06-16  
-    ##  Median :2021-05-16   Median :3616   Median : 89.0   Median :0.0264457   Median :2021-06-30  
-    ##  Mean   :2021-05-19   Mean   :2992   Mean   :134.2   Mean   :0.1231187   Mean   :2021-06-29  
-    ##  3rd Qu.:2021-06-06   3rd Qu.:4088   3rd Qu.:143.0   3rd Qu.:0.0823743   3rd Qu.:2021-07-22  
-    ##  Max.   :2021-07-18   Max.   :4547   Max.   :643.0   Max.   :0.9237589   Max.   :2021-07-29
+    ##       date              seq_total       seq_voc        share_voc      
+    ##  Min.   :2021-04-18   Min.   :   0   Min.   :  3.0   Min.   :0.00080  
+    ##  1st Qu.:2021-05-02   1st Qu.:   0   1st Qu.: 34.0   1st Qu.:0.01191  
+    ##  Median :2021-05-30   Median :   0   Median : 89.0   Median :0.02645  
+    ##  Mean   :2021-06-01   Mean   :1474   Mean   :134.2   Mean   :0.12312  
+    ##  3rd Qu.:2021-06-27   3rd Qu.:3611   3rd Qu.:143.0   3rd Qu.:0.08237  
+    ##  Max.   :2021-08-29   Max.   :4547   Max.   :643.0   Max.   :0.92376  
+    ##                                      NA's   :105     NA's   :105      
+    ##  seq_available       
+    ##  Min.   :2021-05-12  
+    ##  1st Qu.:2021-07-03  
+    ##  Median :2021-08-05  
+    ##  Mean   :2021-07-27  
+    ##  3rd Qu.:2021-08-26  
+    ##  Max.   :2021-09-09  
+    ## 
 
 ## Merge, explore, and save data
 
@@ -107,28 +123,36 @@ notifications[, `:=`(location_name = "Germany", location = "DE")]
 setcolorder(notifications, c("date", "location_name", "location"))
 
 # save to observations folder
-fwrite(notifications, file = here("data/observations/germany.csv"))
+fwrite(notifications, file = here("data/observations/rki.csv"))
 
 # Summary
 summary(notifications)
 ```
 
-    ##       date            location_name        location             cases        cases_available     
-    ##  Min.   :2021-03-20   Length:114         Length:114         Min.   :  4181   Min.   :2021-03-20  
-    ##  1st Qu.:2021-05-01   Class :character   Class :character   1st Qu.: 22631   1st Qu.:2021-05-01  
-    ##  Median :2021-05-15   Mode  :character   Mode  :character   Median : 77261   Median :2021-05-15  
-    ##  Mean   :2021-05-22                                         Mean   : 77741   Mean   :2021-05-22  
-    ##  3rd Qu.:2021-06-10                                         3rd Qu.:131887   3rd Qu.:2021-06-10  
-    ##  Max.   :2021-09-11                                         Max.   :145568   Max.   :2021-09-11  
-    ##                                                                                                  
-    ##    seq_total       seq_voc        share_voc        seq_available       
-    ##  Min.   : 452   Min.   :  3.0   Min.   :0.000799   Min.   :2021-05-12  
-    ##  1st Qu.:1801   1st Qu.: 34.0   1st Qu.:0.011912   1st Qu.:2021-06-16  
-    ##  Median :3616   Median : 89.0   Median :0.026446   Median :2021-06-30  
-    ##  Mean   :2992   Mean   :134.2   Mean   :0.123119   Mean   :2021-06-29  
-    ##  3rd Qu.:4088   3rd Qu.:143.0   3rd Qu.:0.082374   3rd Qu.:2021-07-22  
-    ##  Max.   :4547   Max.   :643.0   Max.   :0.923759   Max.   :2021-07-29  
-    ##  NA's   :12     NA's   :12      NA's   :12         NA's   :12
+    ##       date            location_name        location             cases       
+    ##  Min.   :2021-03-20   Length:215         Length:215         Min.   :  4181  
+    ##  1st Qu.:2021-05-01   Class :character   Class :character   1st Qu.: 14654  
+    ##  Median :2021-05-29   Mode  :character   Mode  :character   Median : 57310  
+    ##  Mean   :2021-06-01                                         Mean   : 64328  
+    ##  3rd Qu.:2021-06-26                                         3rd Qu.:124926  
+    ##  Max.   :2021-09-25                                         Max.   :145568  
+    ##                                                                             
+    ##  cases_available        seq_total       seq_voc        share_voc      
+    ##  Min.   :2021-03-20   Min.   :   0   Min.   :  3.0   Min.   :0.00080  
+    ##  1st Qu.:2021-05-01   1st Qu.:   0   1st Qu.: 34.0   1st Qu.:0.01191  
+    ##  Median :2021-05-29   Median :   0   Median : 89.0   Median :0.02645  
+    ##  Mean   :2021-06-01   Mean   :1474   Mean   :134.2   Mean   :0.12312  
+    ##  3rd Qu.:2021-06-26   3rd Qu.:3611   3rd Qu.:143.0   3rd Qu.:0.08237  
+    ##  Max.   :2021-09-25   Max.   :4547   Max.   :643.0   Max.   :0.92376  
+    ##                       NA's   :8      NA's   :113     NA's   :113      
+    ##  seq_available       
+    ##  Min.   :2021-05-12  
+    ##  1st Qu.:2021-07-03  
+    ##  Median :2021-08-05  
+    ##  Mean   :2021-07-27  
+    ##  3rd Qu.:2021-08-26  
+    ##  Max.   :2021-09-09  
+    ##  NA's   :8
 
   - Plot cases in Germany
 
@@ -185,5 +209,9 @@ ggplot(seq_change) +
   theme_bw() +
   theme(legend.position = "bottom")
 ```
+
+    ## Warning: Removed 207 rows containing missing values (geom_point).
+
+    ## Warning: Removed 207 row(s) containing missing values (geom_path).
 
 ![](process-obs_files/figure-gfm/sequences-change-1.png)<!-- -->

@@ -25,7 +25,8 @@ targets <- targets[!grepl("targets/summarise_sources.R", targets)]
 purrr::walk(targets, source)
 
 # datasets of interest
-sources <- list(source = c("Germany", "United Kingdom", "Belgium", "Italy"))
+#sources <- list(source = c("Germany", "United Kingdom", "Belgium", "Italy"))
+sources <- list(source = "Germany")
 
 # input and control targets
 meta_targets <- list(

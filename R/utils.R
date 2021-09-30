@@ -1,15 +1,9 @@
-load_obs <- function(location, path = "data/observations", source) {
+load_obs <- function(location, path = "data/observations",
+                     source = "covariants") {
   if (missing(location)) {
     location <- NULL
   }
   sources <- c("germany", "covariants")
-  if (missing(source)) {
-    if (location %in% "Germany") {
-      source <- "germany"
-    } else {
-      source <- "covariants"
-    }
-  }
   source <- match.arg(source,
     choices = sources
   )

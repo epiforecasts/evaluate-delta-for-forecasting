@@ -81,7 +81,7 @@ notifications[, `:=`(location_name = "Germany", location = "DE")]
 setcolorder(notifications, c("date", "location_name", "location"))
 
 # save to observations folder
-fwrite(notifications, file = here("data/observations/germany.csv"))
+fwrite(notifications, file = here("data/observations/rki.csv"))
 
 # Summary
 summary(notifications)
