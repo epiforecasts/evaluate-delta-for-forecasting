@@ -56,6 +56,16 @@ meta_targets <- list(
     list(
       voc_scale = c(0.5, 0.25)
     )
+  ),
+  # Data source to use for model validation
+  tar_target(
+    validation_source,
+    "Germany"
+  ),
+  # Forecast dates to use for model validation
+  tar_target(
+    validation_dates,
+    as.Date(c("2021-06-26", "2021-07-10", "2021-07-24", "2021-08-07"))
   )
 )
 # branch targets across data sources (see individual targets scripts in
@@ -78,6 +88,7 @@ source(here("targets/summarise_sources.R"))
 # Combine, evaluate, and summarise targets
 list(
   meta_targets,
+  validation_targets,
   scenario_targets,
   combined_targets,
   summarise_source_targets

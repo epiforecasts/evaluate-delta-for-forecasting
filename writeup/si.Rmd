@@ -142,17 +142,32 @@ The stan code for this model is follows
 
 ### Prior Predictive Checks
 
+- Plot prior and observations for 4 forecast horizons in germany
+- Plot model summmary statistics
+
 #### Single strain
 
 #### Two strain
 
 ### Posterior Predictive Checks
 
+- Plot posterior and observations for 4 forecast horizons
+- Plot model summmary statistics
+- Plot fit statistics
+
 #### Single strain
 
 #### Two strain
 
+##### Scaled
+
+#### Pooled
+
+#### Independent
+
 ### Simulation-based calibration
+
+For 4 forecast dates draw 100 samples from the prior, fit the model, and report the coverage of the model fits for key parameters.
 
 #### Single strain
 
@@ -170,6 +185,7 @@ The stan code for this model is follows
 
 - Plot from each case study showing two week ahead forecasts single + two strain models
 - Table summarising scores for each case study
+- Table summarising model fit statistics for each location
 
 ### Evaluation
 
