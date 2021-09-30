@@ -23,16 +23,16 @@ Imports:
     jsonlite,
     lubridate,
     purrr,
+    rmarkdown,
+    knitr,
     scoringutils,
     tarchetypes,
     targets
 Suggests:
     git2r,
-    knitr,
     lintr,
     precommit,
-    rmarkdown,
-    spelling,
+    spelling
     styler
 VignetteBuilder: 
     knitr
