@@ -9,6 +9,7 @@ library(gh)
 library(purrr)
 library(ggplot2)
 library(here)
+library(covidregionaldata)
 ```
 
 ## Case notification data
@@ -220,7 +221,7 @@ notifications <- merge(filt_cases, adjusted_seq,
 )
 setorder(notifications, seq_available)
 setorder(notifications, location_name, date)
-setorderv(notifications, c("location_name", "seq_available", "date"))
+setorderv(notifications, c("location_name", "date", "seq_available"))
 ```
 
 - Save and summarise filtered notification data.
@@ -249,11 +250,42 @@ ggplot(not_cases) +
 
 - Case notifications normalised by maximum number of notifications in that location.
 ```{r normalised-by-max}
-ggplot(not_cases[, cases := cases / max(cases), by = "location_name"]) +
+ggplot(copy(not_cases)[, cases := cases / max(cases), by = "location_name"]) +
   aes(x = date, y = cases, col = location_name) +
   geom_line(alpha = 0.6) +
   theme_bw() +
   theme(legend.position = "bottom")
+```
+
+- Compare case notifications in Germany in this data with case notifications in the RKI data source and the WHO data source.
+
+```{r rki-vs-covariants-cases}
+# get comparison data sources
+rki <- fread(here("data", "observations", "rki.csv"))
+who <- setDT(
+  covidregionaldata::get_national_data(
+    "Germany", source = "WHO", verbose = FALSE
+  )
+)
+# make the who data source weekly
+who[, cases := frollsum(cases_new, n = 7)][weekdays(date) %in% "Saturday"]
+
+germany <- rbind(
+  unique(rki[, .(date = as.Date(date), cases, source = "RKI")]),
+  not_cases[location_name == "Germany"][,
+     .(date, cases, source = "JHU")],
+  who[date >= min(rki$date) & date <= max(rki$date)][,
+      .(date, cases = cases, source = "WHO")]
+)
+
+ggplot(germany) +
+  aes(x = date, y = cases, col = source) +
+  geom_point(size = 1.4, alpha = 0.8) +
+  geom_line(size = 1.1, alpha = 0.6) +
+  scale_colour_brewer(palette = "Dark2") +
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  labs(x = "Date", y = "COVID-19 notifications", col = "Source")
 ```
 
 - Share of sequences that were positive for the Delta variant based on the lastest available data.

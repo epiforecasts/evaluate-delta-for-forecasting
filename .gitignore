@@ -4,3 +4,4 @@
 *.log
 _targets
 *.html
+.DS_Store
