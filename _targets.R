@@ -6,6 +6,13 @@ library(future.callr)
 library(here)
 plan(callr)
 
+# should the whole pipeline be run or just the validation steps
+validation_only <- TRUE
+
+# datasets of interest
+#sources <- list(source = c("Germany", "United Kingdom", "Belgium", "Italy"))
+sources <- list(source = "Germany")
+
 # load required packages and watch forecast.vocs for changes
 tar_option_set(
   packages = c("forecast.vocs", "purrr", "data.table", "scoringutils"),
@@ -24,12 +31,13 @@ targets <- grep("*\\.R", targets, value = TRUE)
 targets <- targets[!grepl("targets/summarise_sources.R", targets)]
 purrr::walk(targets, source)
 
-# datasets of interest
-#sources <- list(source = c("Germany", "United Kingdom", "Belgium", "Italy"))
-sources <- list(source = "Germany")
-
 # input and control targets
 meta_targets <- list(
+  # Path to observations
+  tar_target(
+    observations,
+    fread(here("data", "observations", "covariants.csv")),
+  ),
   # Compile models
   tar_target(
     single_model,
@@ -56,6 +64,16 @@ meta_targets <- list(
     list(
       voc_scale = c(0.5, 0.25)
     )
+  ),
+  # Data source to use for model validation
+  tar_target(
+    validation_source,
+    "Germany"
+  ),
+  # Forecast dates to use for model validation
+  tar_target(
+    validation_dates,
+    as.Date(c("2021-06-28", "2021-07-10", "2021-07-24", "2021-08-07"))
   )
 )
 # branch targets across data sources (see individual targets scripts in
@@ -76,9 +94,15 @@ combined_targets <- tar_map(
 source(here("targets/summarise_sources.R"))
 
 # Combine, evaluate, and summarise targets
-list(
+targets_list <- list(
   meta_targets,
   scenario_targets,
-  combined_targets,
-  summarise_source_targets
+  validation_targets
 )
+if (!validation_only) {
+  targets_list <- c(
+    combined_targets,
+    summarise_source_targets
+  )
+}
+targets_list

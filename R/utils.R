@@ -1,17 +1,9 @@
-load_obs <- function(location, path = "data/observations",
-                     source = "covariants") {
+filter_obs <- function(observations, location) {
   if (missing(location)) {
     location <- NULL
   }
-  sources <- c("rki", "covariants")
-  source <- match.arg(source,
-    choices = sources
-  )
-  source_path <- here::here(path, paste0(source, ".csv"))
-  message("Loading observations from: ", source_path)
-  obs <- data.table::fread(
-    source_path
-  )
+  obs <- data.table::copy(observations)
+
   if (!is.null(location)) {
     loc <- location
     obs <- obs[location_name %in% loc]
