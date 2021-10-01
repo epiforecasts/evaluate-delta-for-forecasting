@@ -31,7 +31,6 @@ targets <- grep("*\\.R", targets, value = TRUE)
 targets <- targets[!grepl("targets/summarise_sources.R", targets)]
 purrr::walk(targets, source)
 
-
 # input and control targets
 meta_targets <- list(
   # Path to observations
@@ -74,7 +73,7 @@ meta_targets <- list(
   # Forecast dates to use for model validation
   tar_target(
     validation_dates,
-    as.Date(c("2021-06-26", "2021-07-10", "2021-07-24", "2021-08-07"))
+    as.Date(c("2021-06-28", "2021-07-10", "2021-07-24", "2021-08-07"))
   )
 )
 # branch targets across data sources (see individual targets scripts in
