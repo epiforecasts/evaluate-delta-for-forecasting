@@ -271,7 +271,8 @@ who <- setDT(
   )
 )
 # make the who data source weekly
-who[, cases := frollsum(cases_new, n = 7)]
+setkey(who, location_name, date)
+who[, cases := frollsum(cases_new, n = 7), by = "location_name"]
 who <- who[weekdays(date) %in% "Saturday"]
 
 germany <- rbind(
