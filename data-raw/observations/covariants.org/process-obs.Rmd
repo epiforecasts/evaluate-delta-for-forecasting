@@ -22,8 +22,11 @@ cases <- fread("https://raw.githubusercontent.com/epiforecasts/covid19-forecast-
 # Format date
 cases[, date := as.Date(date)]
 
+# Order data by date and location
+setkey(cases, location_name, date)
+
 # Summarise to weekly cases starting on Saturday to Sync with the forecast hubs
-cases[, cases := frollsum(value, n = 7)]
+cases[, cases := frollsum(value, n = 7), by = c("location_name")]
 
 # Filter from the 1st of January and keep only Saturdays
 cases <- cases[date >= as.Date("2021-01-01")]
@@ -196,7 +199,7 @@ filt_sequences <- filt_sequences[week_ending <= end_date][
 
 ```{r}
 filt_cases <- Reduce(
-  merge,
+  function(x,y ) { merge(x, y, by = "location_name")},
   list(
     cases,
     first_seq[, .(location_name, intro_date = week_ending)],
@@ -268,7 +271,8 @@ who <- setDT(
   )
 )
 # make the who data source weekly
-who[, cases := frollsum(cases_new, n = 7)][weekdays(date) %in% "Saturday"]
+who[, cases := frollsum(cases_new, n = 7)]
+who <- who[weekdays(date) %in% "Saturday"]
 
 germany <- rbind(
   unique(rki[, .(date = as.Date(date), cases, source = "RKI")]),
