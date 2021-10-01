@@ -7,7 +7,7 @@ validation_targets <- list(
   # load data for validation data source
   tar_target(
     validation_obs,
-    load_obs(validation_source)
+    filter_obs(observations, validation_source)
   ),
   # extract the most up to date version of the validation data
   tar_target(

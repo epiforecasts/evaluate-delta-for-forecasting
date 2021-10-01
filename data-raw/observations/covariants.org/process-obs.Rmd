@@ -227,6 +227,16 @@ setorder(notifications, location_name, date)
 setorderv(notifications, c("location_name", "date", "seq_available"))
 ```
 
+- Check data for negative values and drop countries if present
+
+```{r}
+problem_countries <- unique(
+  notifications[cases < 0 | seq_total < 0]$location_name
+)
+problem_countries
+notifications <- notifications[!(location_name %in% problem_countries)]
+```
+
 - Save and summarise filtered notification data.
 
 ```{r}
@@ -272,6 +282,7 @@ who <- setDT(
 )
 # make the who data source weekly
 who[, cases := frollsum(cases_new, n = 7)]
+who <- who[weekdays(date) %in% "Saturday"]
 
 germany <- rbind(
   unique(rki[, .(date = as.Date(date), cases, source = "RKI")]),

@@ -34,6 +34,11 @@ purrr::walk(targets, source)
 
 # input and control targets
 meta_targets <- list(
+  # Path to observations
+  tar_target(
+    observations,
+    fread(here("data", "observations", "covariants.csv")),
+  ),
   # Compile models
   tar_target(
     single_model,

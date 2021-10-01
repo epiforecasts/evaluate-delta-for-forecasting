@@ -3,7 +3,7 @@ obs_targets <- list(
   # load data from supplied source
   tar_target(
     obs,
-    load_obs(source)
+    filter_obs(observations, source)
   ),
   # extract the most up to date version of the data
   tar_target(
