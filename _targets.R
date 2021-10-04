@@ -73,7 +73,7 @@ meta_targets <- list(
   # Forecast dates to use for model validation
   tar_target(
     validation_dates,
-    as.Date(c("2021-06-28", "2021-07-10", "2021-07-24", "2021-08-07"))
+    as.Date(c("2021-07-03", "2021-07-10", "2021-07-24", "2021-08-07"))
   )
 )
 # branch targets across data sources (see individual targets scripts in
