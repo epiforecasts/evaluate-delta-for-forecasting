@@ -18,8 +18,7 @@ tar_option_set(
   packages = c("forecast.vocs", "purrr", "data.table", "scoringutils"),
   deployment = "worker",
   workspace_on_error = TRUE,
-  error = "continue",
-  debug = "single_predictive_checks"
+  error = "continue"
 )
 
 # load functions
