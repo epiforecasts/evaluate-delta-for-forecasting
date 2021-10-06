@@ -3,7 +3,7 @@ scenario_forecast_targets <- list(
   tar_target(
     two_scenario_forecasts,
     do.call(
-      forecast_dt,
+      forecast,
       c(
         forecast_args,
         list(
