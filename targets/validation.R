@@ -28,7 +28,7 @@ validation_targets <- list(
   tar_target(
     single_predictive_checks,
     do.call(
-      forecast_dt,
+      forecast,
       c(
         forecast_args,
         retro_args,
@@ -48,7 +48,7 @@ validation_targets <- list(
   tar_target(
     two_predictive_checks,
     do.call(
-      forecast_dt,
+      forecast,
       c(
         forecast_args,
         retro_args,

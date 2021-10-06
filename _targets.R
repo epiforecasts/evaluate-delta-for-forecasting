@@ -54,7 +54,8 @@ meta_targets <- list(
     forecast_args,
     list(
       horizon = 4, adapt_delta = 0.99, max_treedepth = 15,
-      parallel_chains = 1, chains = 2, keep_fit = FALSE
+      parallel_chains = 1, chains = 2, keep_fit = FALSE,
+      probs = c(0.01, 0.025, seq(0.05, 0.95, by = 0.05), 0.975, 0.99)
     ),
     deployment = "main"
   ),

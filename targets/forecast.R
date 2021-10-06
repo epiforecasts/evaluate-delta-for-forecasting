@@ -3,7 +3,7 @@ forecast_targets <- list(
   tar_target(
     single_retrospective_forecasts,
     do.call(
-      forecast_dt,
+      forecast,
       c(
         forecast_args,
         retro_args,
@@ -21,7 +21,7 @@ forecast_targets <- list(
   tar_target(
     two_retrospective_forecasts,
     do.call(
-      forecast_dt,
+      forecast,
       c(
         forecast_args,
         retro_args,
