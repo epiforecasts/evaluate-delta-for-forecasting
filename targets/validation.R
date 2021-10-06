@@ -36,12 +36,13 @@ validation_targets <- list(
           obs = retro_validation_obs,
           strains = 1,
           model = single_model,
-          likelihood = validate_likelihood
+          likelihood = validate_likelihood,
+          overdispersion = overdispersion_scenarios
         )
       )
     )[, likelihood := validate_likelihood],
     deployment = "worker", memory = "transient", garbage_collection = TRUE,
-    cross(retro_validation_obs, validate_likelihood)
+    head(cross(retro_validation_obs, validate_likelihood, overdispersion_scenarios), n = 1)
   ),
   # prior and predictive checks for validation data on the two strain model
   # stratified by modelled relationship between variants
@@ -57,12 +58,13 @@ validation_targets <- list(
           strains = 2,
           variant_relationship = variant_relationship_scenarios,
           model = two_model,
-          likelihood = validate_likelihood
+          likelihood = validate_likelihood,
+          overdispersion = overdispersion_scenarios
         )
       )
     )[, likelihood := validate_likelihood],
     deployment = "worker", memory = "transient", garbage_collection = TRUE,
     cross(retro_validation_obs, variant_relationship_scenarios,
-          validate_likelihood)
+          overdispersion_scenarios, validate_likelihood)
   )
 )

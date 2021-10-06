@@ -284,10 +284,15 @@
     },
     "cmdstanr": {
       "Package": "cmdstanr",
-      "Version": "0.4.0",
-      "Source": "unknown",
-      "Remotes": "stan-dev/posterior",
-      "Hash": "039037e8fb6be7a0312ebd1204370000"
+      "Version": "0.4.0.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "cmdstanr",
+      "RemoteUsername": "stan-dev",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "9aab8afb7fbfe02fa4eb03fb4e827ef13243c5ad",
+      "Hash": "dfe856236303a6029ebbce0189c44cff"
     },
     "coda": {
       "Package": "coda",
@@ -501,15 +506,16 @@
     },
     "forecast.vocs": {
       "Package": "forecast.vocs",
-      "Version": "0.0.2.1000",
+      "Version": "0.0.3.5000",
       "Source": "GitHub",
+      "Remotes": "stan-dev/cmdstanr",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "forecast.vocs",
       "RemoteUsername": "epiforecasts",
       "RemoteRef": "HEAD",
-      "RemoteSha": "0d126d1da4838bdf630d5962b7f606c9df2bc6ea",
-      "Hash": "24df3fd3800d8375cd8480068c04dcbe"
+      "RemoteSha": "7b0114eb7e3f46be715392cd79b8e3590d514fa2",
+      "Hash": "475b3432f7bd9a72500fd59289a4e580"
     },
     "fs": {
       "Package": "fs",
@@ -1302,10 +1308,10 @@
     },
     "stringi": {
       "Package": "stringi",
-      "Version": "1.7.4",
+      "Version": "1.7.5",
       "Source": "Repository",
       "Repository": "RSPM",
-      "Hash": "ebaccb577da50829a3bb1b8296f318a5"
+      "Hash": "cd50dc9b449de3d3b47cdc9976886999"
     },
     "stringr": {
       "Package": "stringr",
@@ -1358,10 +1364,10 @@
     },
     "tibble": {
       "Package": "tibble",
-      "Version": "3.1.4",
+      "Version": "3.1.5",
       "Source": "Repository",
       "Repository": "RSPM",
-      "Hash": "5e8ad5621e5c94b24ec07b88eee13df8"
+      "Hash": "36eb05ad4cfdfeaa56f5a9b2a1311efd"
     },
     "tidyr": {
       "Package": "tidyr",

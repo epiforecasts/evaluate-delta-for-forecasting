@@ -199,7 +199,9 @@ filt_sequences <- filt_sequences[week_ending <= end_date][
 
 ```{r}
 filt_cases <- Reduce(
-  function(x,y ) { merge(x, y, by = "location_name")},
+  function(x, y) {
+    merge(x, y, by = "location_name", all.x = TRUE)
+  },
   list(
     cases,
     first_seq[, .(location_name, intro_date = week_ending)],
