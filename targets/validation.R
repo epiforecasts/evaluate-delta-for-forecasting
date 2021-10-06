@@ -19,7 +19,8 @@ validation_targets <- list(
     retro_validation_obs,
     filter_by_availability(validation_obs, date = validation_dates),
     map(validation_dates),
-    deployment = "worker"
+    deployment = "worker",
+    iteration = "list"
   ),
   # plot prior predictive check
   # plot posterior predictive check
