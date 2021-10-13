@@ -284,10 +284,15 @@
     },
     "cmdstanr": {
       "Package": "cmdstanr",
-      "Version": "0.4.0",
-      "Source": "unknown",
-      "Remotes": "stan-dev/posterior",
-      "Hash": "039037e8fb6be7a0312ebd1204370000"
+      "Version": "0.4.0.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "cmdstanr",
+      "RemoteUsername": "stan-dev",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "32ac2d54a96e00e431ca0d29936ca5309365d115",
+      "Hash": "f7d92360dfaadb0b5dd108343a856dc8"
     },
     "coda": {
       "Package": "coda",
@@ -382,10 +387,10 @@
     },
     "data.table": {
       "Package": "data.table",
-      "Version": "1.14.2",
+      "Version": "1.14.3",
       "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "36b67b5adf57b292923f5659f5f0c853"
+      "Repository": "CRAN",
+      "Hash": "e58054b79bce5d6e7365f5dff84e9024"
     },
     "dbplyr": {
       "Package": "dbplyr",
@@ -501,15 +506,16 @@
     },
     "forecast.vocs": {
       "Package": "forecast.vocs",
-      "Version": "0.0.2.1000",
+      "Version": "0.0.4.1000",
       "Source": "GitHub",
+      "Remotes": "stan-dev/cmdstanr",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "forecast.vocs",
       "RemoteUsername": "epiforecasts",
       "RemoteRef": "HEAD",
-      "RemoteSha": "0d126d1da4838bdf630d5962b7f606c9df2bc6ea",
-      "Hash": "24df3fd3800d8375cd8480068c04dcbe"
+      "RemoteSha": "38c8c8a3f04c1b31603d3918abfb98333941d46b",
+      "Hash": "c9c1a89fd66a7dab7b53baf37760a96f"
     },
     "fs": {
       "Package": "fs",
@@ -1302,10 +1308,10 @@
     },
     "stringi": {
       "Package": "stringi",
-      "Version": "1.7.4",
+      "Version": "1.7.5",
       "Source": "Repository",
       "Repository": "RSPM",
-      "Hash": "ebaccb577da50829a3bb1b8296f318a5"
+      "Hash": "cd50dc9b449de3d3b47cdc9976886999"
     },
     "stringr": {
       "Package": "stringr",
@@ -1358,10 +1364,10 @@
     },
     "tibble": {
       "Package": "tibble",
-      "Version": "3.1.4",
+      "Version": "3.1.5",
       "Source": "Repository",
       "Repository": "RSPM",
-      "Hash": "5e8ad5621e5c94b24ec07b88eee13df8"
+      "Hash": "36eb05ad4cfdfeaa56f5a9b2a1311efd"
     },
     "tidyr": {
       "Package": "tidyr",

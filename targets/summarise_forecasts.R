@@ -20,17 +20,17 @@ summarise_forecast_targets <- list(
   # Combine forecasts into a single data frame
   tar_target(
     forecast_single_retro,
-    combine_posteriors_dt(single_retrospective_forecasts, target = "forecast"),
+    unnest_posterior(single_retrospective_forecasts, target = "forecast"),
     deployment = "worker", memory = "transient", garbage_collection = TRUE,
   ),
   tar_target(
     forecast_two_retro,
-    combine_posteriors_dt(two_retrospective_forecasts, target = "forecast"),
+    unnest_posterior(two_retrospective_forecasts, target = "forecast"),
     deployment = "worker", memory = "transient", garbage_collection = TRUE,
   ),
   tar_target(
     forecast_two_scenario,
-    combine_posteriors_dt(two_scenario_forecasts, target = "forecast"),
+    unnest_posterior(two_scenario_forecasts, target = "forecast"),
     deployment = "worker", memory = "transient", garbage_collection = TRUE,
   ),
   # Combine all separate forecasts into a single data frame
@@ -43,7 +43,7 @@ summarise_forecast_targets <- list(
           forecast_two_retro,
           forecast_two_scenario
         )
-      )[, location := source],
+      )[, location := source][, voc_scale := NULL],
       data_availability_scenarios[
         ,
         voc_scale := map_chr(voc_scale, paste, collapse = ", ")

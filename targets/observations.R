@@ -20,7 +20,8 @@ obs_targets <- list(
     retro_obs,
     filter_by_availability(obs, date = forecast_dates),
     map(forecast_dates),
-    deployment = "worker"
+    deployment = "worker",
+    iteration = "list"
   ),
   # generate scenario data sets using latest data and scenarios
   tar_target(
@@ -45,6 +46,6 @@ obs_targets <- list(
       ))
     )],
     cross(forecast_dates, scenario_obs),
-    deployment = "worker"
+    deployment = "worker", iteration = "list"
   )
 )

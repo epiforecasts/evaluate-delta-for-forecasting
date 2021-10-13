@@ -19,7 +19,8 @@ validation_targets <- list(
     retro_validation_obs,
     filter_by_availability(validation_obs, date = validation_dates),
     map(validation_dates),
-    deployment = "worker"
+    deployment = "worker",
+    iteration = "list"
   ),
   # plot prior predictive check
   # plot posterior predictive check
@@ -28,7 +29,7 @@ validation_targets <- list(
   tar_target(
     single_predictive_checks,
     do.call(
-      forecast_dt,
+      forecast,
       c(
         forecast_args,
         retro_args,
@@ -36,19 +37,20 @@ validation_targets <- list(
           obs = retro_validation_obs,
           strains = 1,
           model = single_model,
-          likelihood = validate_likelihood
+          likelihood = validate_likelihood,
+          overdispersion = overdispersion_scenarios
         )
       )
     )[, likelihood := validate_likelihood],
     deployment = "worker", memory = "transient", garbage_collection = TRUE,
-    cross(retro_validation_obs, validate_likelihood)
+    cross(retro_validation_obs, validate_likelihood, overdispersion_scenarios)
   ),
   # prior and predictive checks for validation data on the two strain model
   # stratified by modelled relationship between variants
   tar_target(
     two_predictive_checks,
     do.call(
-      forecast_dt,
+      forecast,
       c(
         forecast_args,
         retro_args,
@@ -57,12 +59,53 @@ validation_targets <- list(
           strains = 2,
           variant_relationship = variant_relationship_scenarios,
           model = two_model,
-          likelihood = validate_likelihood
+          likelihood = validate_likelihood,
+          overdispersion = overdispersion_scenarios
         )
       )
     )[, likelihood := validate_likelihood],
     deployment = "worker", memory = "transient", garbage_collection = TRUE,
     cross(retro_validation_obs, variant_relationship_scenarios,
-          validate_likelihood)
+          overdispersion_scenarios, validate_likelihood)
+  ),
+  ## plot prior predictions for single model
+  tar_target(
+    plot_single_strain_prior,
+    plot_single_strain_predictions(single_predictive_checks, validation_obs,
+                                   likelihood = FALSE),
+    format = "file"
+  ),
+  ## plot posterior predictions for single model
+  tar_target(
+    plot_single_strain_posterior,
+    plot_single_strain_predictions(single_predictive_checks, validation_obs,
+                            likelihood = TRUE),
+    format = "file"
+  ),
+  ## plot prior predictions for two strain model
+  tar_target(
+    plot_two_strain_prior_overdisp,
+    plot_two_strain_predictions(two_predictive_checks, validation_obs,
+                                likelihood = FALSE, overdispersion = TRUE),
+    format = "file"
+  ),
+  tar_target(
+    plot_two_strain_prior,
+    plot_two_strain_predictions(two_predictive_checks, validation_obs,
+                                likelihood = FALSE, overdispersion = FALSE),
+    format = "file"
+  ),
+  ## plot posterior predictions for single model
+  tar_target(
+    plot_two_strain_posterior_overdisp,
+    plot_two_strain_predictions(two_predictive_checks, validation_obs,
+                                likelihood = TRUE, overdispersion = TRUE),
+    format = "file"
+  ),
+  tar_target(
+    plot_two_strain_posterior,
+    plot_two_strain_predictions(two_predictive_checks, validation_obs,
+                                likelihood = TRUE, overdispersion = FALSE),
+    format = "file"
   )
 )
