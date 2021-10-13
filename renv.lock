@@ -291,8 +291,8 @@
       "RemoteRepo": "cmdstanr",
       "RemoteUsername": "stan-dev",
       "RemoteRef": "HEAD",
-      "RemoteSha": "9aab8afb7fbfe02fa4eb03fb4e827ef13243c5ad",
-      "Hash": "dfe856236303a6029ebbce0189c44cff"
+      "RemoteSha": "32ac2d54a96e00e431ca0d29936ca5309365d115",
+      "Hash": "f7d92360dfaadb0b5dd108343a856dc8"
     },
     "coda": {
       "Package": "coda",
@@ -506,7 +506,7 @@
     },
     "forecast.vocs": {
       "Package": "forecast.vocs",
-      "Version": "0.0.3.5000",
+      "Version": "0.0.4.1000",
       "Source": "GitHub",
       "Remotes": "stan-dev/cmdstanr",
       "RemoteType": "github",
@@ -514,8 +514,8 @@
       "RemoteRepo": "forecast.vocs",
       "RemoteUsername": "epiforecasts",
       "RemoteRef": "HEAD",
-      "RemoteSha": "7b0114eb7e3f46be715392cd79b8e3590d514fa2",
-      "Hash": "475b3432f7bd9a72500fd59289a4e580"
+      "RemoteSha": "38c8c8a3f04c1b31603d3918abfb98333941d46b",
+      "Hash": "c9c1a89fd66a7dab7b53baf37760a96f"
     },
     "fs": {
       "Package": "fs",

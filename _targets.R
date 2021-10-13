@@ -15,8 +15,10 @@ sources <- list(source = "Germany")
 
 # load required packages and watch forecast.vocs for changes
 tar_option_set(
-  packages = c("forecast.vocs", "purrr", "data.table", "scoringutils"),
+  packages = c("forecast.vocs", "purrr", "data.table", "scoringutils",
+               "ggplot2", "here"),
   deployment = "worker",
+  memory = "transient",
   workspace_on_error = TRUE,
   error = "continue"
 )

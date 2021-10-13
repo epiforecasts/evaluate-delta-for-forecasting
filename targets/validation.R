@@ -67,5 +67,19 @@ validation_targets <- list(
     deployment = "worker", memory = "transient", garbage_collection = TRUE,
     cross(retro_validation_obs, variant_relationship_scenarios,
           overdispersion_scenarios, validate_likelihood)
+  ),
+  ## plot predictions for single model
+  tar_target(
+    plot_single_prior,
+    plot_single_predictions(single_predictive_checks, validation_obs, 
+                            likelihood = FALSE),
+    format = "file"
+  ),
+  ## plot predictions for single model
+  tar_target(
+    plot_single_posterior,
+    plot_single_predictions(single_predictive_checks, validation_obs,
+                            likelihood = TRUE),
+    format = "file"
   )
 )
