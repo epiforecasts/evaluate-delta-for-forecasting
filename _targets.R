@@ -20,7 +20,8 @@ tar_option_set(
   deployment = "worker",
   memory = "transient",
   workspace_on_error = TRUE,
-  error = "continue"
+  error = "continue",
+  garbage_collection = TRUE
 )
 
 # load functions
