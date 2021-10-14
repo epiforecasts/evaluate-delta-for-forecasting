@@ -15,23 +15,19 @@ summarise_forecast_targets <- list(
         per_at_max_treedepth
       )])
     ),
-    deployment = "worker", memory = "transient", garbage_collection = TRUE,
   ),
   # Combine forecasts into a single data frame
   tar_target(
     forecast_single_retro,
     unnest_posterior(single_retrospective_forecasts, target = "forecast"),
-    deployment = "worker", memory = "transient", garbage_collection = TRUE,
   ),
   tar_target(
     forecast_two_retro,
     unnest_posterior(two_retrospective_forecasts, target = "forecast"),
-    deployment = "worker", memory = "transient", garbage_collection = TRUE,
   ),
   tar_target(
     forecast_two_scenario,
     unnest_posterior(two_scenario_forecasts, target = "forecast"),
-    deployment = "worker", memory = "transient", garbage_collection = TRUE,
   ),
   # Combine all separate forecasts into a single data frame
   tar_target(
@@ -50,8 +46,6 @@ summarise_forecast_targets <- list(
       ],
       by = "id", all.x = TRUE
     ),
-    deployment = "worker",
-    memory = "transient"
   ),
   # Extract forecasts for cases only and link to current observations
   tar_target(

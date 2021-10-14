@@ -15,7 +15,6 @@ forecast_targets <- list(
         )
       )
     ),
-    deployment = "worker", memory = "transient", garbage_collection = TRUE,
     cross(retro_obs, overdispersion_scenarios)
   ),
   tar_target(
@@ -34,7 +33,6 @@ forecast_targets <- list(
         )
       )
     ),
-    deployment = "worker", memory = "transient", garbage_collection = TRUE,
     cross(retro_obs, variant_relationship_scenarios, overdispersion_scenarios)
   )
 )

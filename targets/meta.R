@@ -13,22 +13,30 @@ meta_targets <- list(
   # Compile models
   tar_target(
     single_model,
-    forecast.vocs::load_model(strains = 1),
+    forecast.vocs::fv_model(strains = 1),
     format = "file", deployment = "main",
   ),
   tar_target(
     two_model,
-    forecast.vocs::load_model(strains = 2),
+    forecast.vocs::fv_model(strains = 2),
     format = "file", deployment = "main",
+  ),
+  # Arguments that control fitting stan models
+  tar_target(
+    stan_args,
+    list(
+      adapt_delta = 0.99, max_treedepth = 15, parallel_chains = 1, chains = 2
+    )
   ),
   # Arguments passed to `forecast()` to control forecasting
   tar_target(
     forecast_args,
-    list(
-      horizon = 4, adapt_delta = 0.99, max_treedepth = 15,
-      parallel_chains = 1, chains = 2, keep_fit = FALSE,
-      probs = c(0.01, 0.025, seq(0.05, 0.95, by = 0.05), 0.975, 0.99),
-      voc_label = "Delta"
+    c(
+      stan_args,
+      list(
+        horizon = 4, keep_fit = FALSE, voc_label = "Delta",
+        probs = c(0.01, 0.025, seq(0.05, 0.95, by = 0.05), 0.975, 0.99)
+      )
     ),
     deployment = "main"
   ),

@@ -7,7 +7,9 @@ library(here)
 plan(callr)
 
 # should the whole pipeline be run or just the validation steps
-validation_only <- TRUE
+validation <- TRUE
+sbc_datasets <- 10
+retrospective <- FALSE
 
 # datasets of interest
 #sources <- list(source = c("Germany", "United Kingdom", "Belgium", "Italy"))
@@ -54,10 +56,15 @@ source(here("targets/summarise_sources.R"))
 # Combine, evaluate, and summarise targets
 targets_list <- list(
   meta_targets, # Inputs and control settings
-  scenario_targets, # Define scenarios to evaluate
-  validation_targets # Validate models
+  scenario_targets # Define scenarios to evaluate
 )
-if (!validation_only) {
+if (validation) {
+  targets_list <- c(targets_list, validation_targets)
+  if (sbc_datasets > 0) {
+    targets_list <- c(targets_list, sbc_targets)
+  }
+}
+if (retrospective) {
   targets_list <- c(
     combined_targets, # Forecast all dates and scenarios
     summarise_source_targets # Summarise forecasts
