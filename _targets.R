@@ -19,6 +19,7 @@ sources <- list(source = "Germany")
 tar_option_set(
   packages = c("forecast.vocs", "purrr", "data.table", "scoringutils",
                "ggplot2", "here", "stringr"),
+  imports = "forecast.vocs",
   deployment = "worker",
   memory = "transient",
   workspace_on_error = TRUE,
@@ -59,8 +60,10 @@ targets_list <- list(
   scenario_targets # Define scenarios to evaluate
 )
 if (validation) {
+  # Prior and posterior checks across a range of scenarios
   targets_list <- c(targets_list, validation_targets)
   if (sbc_datasets > 0) {
+    # Simulation based calibration across a range of scenarios
     targets_list <- c(targets_list, sbc_targets)
   }
 }

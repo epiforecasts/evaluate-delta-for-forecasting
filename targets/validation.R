@@ -41,7 +41,6 @@ validation_targets <- list(
         )
       )
     )[, likelihood := validate_likelihood],
-    deployment = "worker", memory = "transient", garbage_collection = TRUE,
     cross(retro_validation_obs, validate_likelihood, overdispersion_scenarios)
   ),
   # prior and predictive checks for validation data on the two strain model
@@ -63,7 +62,6 @@ validation_targets <- list(
         )
       )
     )[, likelihood := validate_likelihood],
-    deployment = "worker", memory = "transient", garbage_collection = TRUE,
     cross(retro_validation_obs, variant_relationship_scenarios,
           overdispersion_scenarios, validate_likelihood)
   ),

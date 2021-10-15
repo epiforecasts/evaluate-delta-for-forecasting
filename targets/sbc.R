@@ -1,6 +1,6 @@
 sbc_targets <- list(
   tar_target(
-    sbc_single_prior_simulations,
+    sbc_one_prior_simulations,
       do.call(
         generate_obs,
         c(
@@ -75,5 +75,15 @@ sbc_targets <- list(
         ),
       ))],
       map(sbc_two_prior_simulations)
+  ),
+  # calculate coverage for one and two strain models across simulations
+  tar_target(
+    one_strain_coverage,
+    sbc_coverage(sbc_one_posteriors, by = c("strains", "overdispersion"))
+  ),
+  tar_target(
+    two_strain_coverage,
+    sbc_coverage(sbc_two_posteriors, by = c("strains", "overdispersion",
+                                            "variant_relationship"))
   )
 )
