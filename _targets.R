@@ -19,7 +19,6 @@ sources <- list(source = "Germany")
 tar_option_set(
   packages = c("forecast.vocs", "purrr", "data.table", "scoringutils",
                "ggplot2", "here", "stringr"),
-  imports = "forecast.vocs",
   deployment = "worker",
   memory = "transient",
   workspace_on_error = TRUE,
