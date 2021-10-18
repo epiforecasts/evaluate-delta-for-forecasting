@@ -282,6 +282,13 @@
       "Repository": "RSPM",
       "Hash": "ebaa97ac99cc2daf04e77eecc7b781d7"
     },
+    "clisymbols": {
+      "Package": "clisymbols",
+      "Version": "1.2.0",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "96c01552bfd5661b9bbdefbc762f4bcd"
+    },
     "cmdstanr": {
       "Package": "cmdstanr",
       "Version": "0.4.0.9000",
@@ -291,8 +298,8 @@
       "RemoteRepo": "cmdstanr",
       "RemoteUsername": "stan-dev",
       "RemoteRef": "HEAD",
-      "RemoteSha": "3b3c02fda0687ea0a81482a078978ec738b04a8d",
-      "Hash": "bb920cee65a54127b216286a3753d478"
+      "RemoteSha": "b10f2e3bdc8e6bcfe0fc6dfad25efe067f9a25ff",
+      "Hash": "a622fb6793a04eb9c653c621cd8930b2"
     },
     "coda": {
       "Package": "coda",
@@ -506,7 +513,7 @@
     },
     "forecast.vocs": {
       "Package": "forecast.vocs",
-      "Version": "0.0.7.1000",
+      "Version": "0.0.7.4000",
       "Source": "GitHub",
       "Remotes": "stan-dev/cmdstanr",
       "RemoteType": "github",
@@ -514,8 +521,8 @@
       "RemoteRepo": "forecast.vocs",
       "RemoteUsername": "epiforecasts",
       "RemoteRef": "HEAD",
-      "RemoteSha": "d8dea09ce336296878b7f748b1698de5ef7f0990",
-      "Hash": "d5d65d17e2f1d5773ac2900f378f2a11"
+      "RemoteSha": "02af6b63b557078332cadce63093ccd5cc8d8f97",
+      "Hash": "ab6233b72253f99f6dffa63398e7fb72"
     },
     "fs": {
       "Package": "fs",
@@ -985,6 +992,13 @@
       "Source": "Repository",
       "Repository": "RSPM",
       "Hash": "5300c9fc71841550bdca64d39e82af0e"
+    },
+    "piggyback": {
+      "Package": "piggyback",
+      "Version": "0.1.1",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "0cd602e7eb4288f3e78fb4eba0507ead"
     },
     "pillar": {
       "Package": "pillar",

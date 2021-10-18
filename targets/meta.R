@@ -3,12 +3,11 @@ meta_targets <- list(
   tar_target(
     observations_file,
     here("data", "observations", "covariants.csv"),
-    format = "file", packages = c("here")
+    format = "file"
   ),
   tar_target(
     observations,
-    fread(observations_file),
-    packages = c("data.table", "here")
+    fread(observations_file)
   ),
   # Compile models
   tar_target(

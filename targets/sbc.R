@@ -44,9 +44,12 @@ sbc_targets <- list(
       cross(retro_validation_obs, variant_relationship_scenarios,
             overdispersion_scenarios)
   ),
+  tar_group_by(sbc_one_prior_simulations_rw,
+               sbc_one_prior_simulations,
+               dataset, overdispersion),
   tar_target(
     sbc_one_posteriors,
-    sbc_one_prior_simulations[,
+    setDT(sbc_one_prior_simulations_rw)[,
       forecast := list(do.call(
         forecast_data,
         c(
@@ -54,15 +57,18 @@ sbc_targets <- list(
           list(
             data = data[[1]],
             strains = 1,
-            model = one_model
+            model = single_model
           )
         ),
       ))],
-      map(sbc_one_prior_simulations)
+      map(sbc_one_prior_simulations_rw)
   ),
+  tar_group_by(sbc_two_prior_simulations_rw,
+               sbc_two_prior_simulations,
+               dataset, overdispersion, variant_relationship),
   tar_target(
     sbc_two_posteriors,
-    sbc_two_prior_simulations[,
+    setDT(sbc_two_prior_simulations_rw)[,
       forecast := list(do.call(
         forecast_data,
         c(
@@ -74,7 +80,7 @@ sbc_targets <- list(
           )
         ),
       ))],
-      map(sbc_two_prior_simulations)
+      map(sbc_two_prior_simulations_rw)
   ),
   # calculate coverage for one and two strain models across simulations
   tar_target(

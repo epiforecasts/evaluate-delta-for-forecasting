@@ -31,6 +31,7 @@ Imports:
 Suggests:
     git2r,
     lintr,
+    piggyback,
     precommit,
     spelling
     styler
@@ -38,7 +39,8 @@ VignetteBuilder:
     knitr
 Remotes:
     epiforecasts/forecast.vocs,
-    lorenzwalthert/precommit
+    lorenzwalthert/precommit,
+    ropensci/piggyback
 Encoding: UTF-8
 Language: en-GB
 LazyData: true

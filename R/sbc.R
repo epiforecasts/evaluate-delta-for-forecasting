@@ -2,10 +2,16 @@
 forecast_data <- function(data, strains, model, ...) {
   inits <- forecast.vocs::fv_inits(data, strains = strains)
 
-  fit <- forecast.vocs::fv_sample(data, init = inits, model = model, ...)
+  safe_forecast <- purrr::safely(forecast.vocs::fv_sample)
 
-  posterior <- forecast.vocs::fv_posterior(fit)
-  return(posterior)
+  fit <- safe_forecast(data, init = inits, model = model, ...)
+
+  if (is.null(fit$error)) {
+    posterior <- forecast.vocs::fv_posterior(fit$result)
+    return(posterior)
+  }else{
+    return(NULL)
+  }
 }
 
 coverage <- function(value, lower, upper) {
