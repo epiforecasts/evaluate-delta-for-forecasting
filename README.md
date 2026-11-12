@@ -1,5 +1,7 @@
 # Evaluating the impact of modelling strain dynamics on short-term COVID-19 forecast performance
 
+> **Archived.** No longer maintained; last updated October 2021.
+
 This repository contains the code, and analysis used to evaluate the impact of modelling strain dynamics on short-term COVID-19 forecast performance. In addition it also contains the write up of this work.
 
 ## Resources
